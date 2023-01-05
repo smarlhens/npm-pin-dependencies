@@ -1,0 +1,6 @@
+# compiled output
+.husky/
+dist/
+node_modules/
+CHANGELOG.md
+coverage/

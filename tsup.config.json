@@ -1,0 +1,17 @@
+{
+  "entry": ["lib/**/*.ts", "bin/npd.ts"],
+  "splitting": false,
+  "platform": "node",
+  "target": "node16",
+  "sourcemap": false,
+  "bundle": true,
+  "minify": true,
+  "dts": {
+    "resolve": true,
+    "entry": "lib/index.ts"
+  },
+  "clean": true,
+  "format": ["cjs", "esm"],
+  "outDir": "dist",
+  "tsconfig": "./tsconfig.json"
+}

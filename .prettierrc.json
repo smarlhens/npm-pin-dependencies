@@ -1,0 +1,19 @@
+{
+  "printWidth": 120,
+  "arrowParens": "avoid",
+  "endOfLine": "auto",
+  "singleQuote": true,
+  "trailingComma": "all",
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrderCaseInsensitive": true,
+  "importOrder": ["<THIRD_PARTY_MODULES>", "^[./]"]
+}
