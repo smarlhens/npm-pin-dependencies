@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.1.4...v0.1.5) (2023-01-07)
+
+
+### Bug Fixes
+
+* packages have node_modules prefix in lock file ([77443b2](https://github.com/smarlhens/npm-pin-dependencies/commit/77443b2cffc6e94af88edc9f84e34f3e12568caf))
+
 ## [0.1.4](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.1.3...v0.1.4) (2023-01-07)
 
 
