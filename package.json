@@ -1,6 +1,6 @@
 {
   "name": "@smarlhens/npm-pin-dependencies",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "NPN tools to pin installed dependency versions written in TypeScript.",
   "keywords": [
     "node",
