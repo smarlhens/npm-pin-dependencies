@@ -105,4 +105,66 @@ describe('npd', () => {
         '[SUCCESS] All dependency versions are already pinned :)',
     );
   }, 10000);
+
+  it('should output no dependency versions to pin from dependencies only', async () => {
+    const execaOptions: Options = {
+      cwd: resolve(process.cwd(), 'examples', 'with-only-dependencies'),
+      stdio: 'pipe',
+      cleanup: true,
+    };
+    const { stdout } = await execaCommand(
+      `node --experimental-specifier-resolution=node --loader ts-node/esm ${resolve(process.cwd(), 'bin', 'npd.ts')}`,
+      execaOptions,
+    );
+    expect(stdout).toEqual(
+      '[STARTED] Pinning dependency versions in package.json file...\n' +
+        '[STARTED] Reading package-lock.json...\n' +
+        '[SUCCESS] Reading package-lock.json...\n' +
+        '[STARTED] Reading package.json...\n' +
+        '[SUCCESS] Reading package.json...\n' +
+        '[STARTED] Validating package-lock.json...\n' +
+        '[SUCCESS] Validating package-lock.json...\n' +
+        '[STARTED] Validating package.json...\n' +
+        '[SUCCESS] Validating package.json...\n' +
+        '[STARTED] Computing which dependency versions are to pin...\n' +
+        '[SUCCESS] Computing which dependency versions are to pin...\n' +
+        '[STARTED] Output dependency versions that can be pinned...\n' +
+        '[TITLE] All dependency versions are already pinned :)\n' +
+        '[SUCCESS] Output dependency versions that can be pinned...\n' +
+        '[STARTED] Updating package.json...\n' +
+        '[SKIPPED] Update is disabled by default.\n' +
+        '[SUCCESS] All dependency versions are already pinned :)',
+    );
+  }, 10000);
+
+  it('should output no dependency versions to pin from devDependencies only', async () => {
+    const execaOptions: Options = {
+      cwd: resolve(process.cwd(), 'examples', 'with-only-dev-dependencies'),
+      stdio: 'pipe',
+      cleanup: true,
+    };
+    const { stdout } = await execaCommand(
+      `node --experimental-specifier-resolution=node --loader ts-node/esm ${resolve(process.cwd(), 'bin', 'npd.ts')}`,
+      execaOptions,
+    );
+    expect(stdout).toEqual(
+      '[STARTED] Pinning dependency versions in package.json file...\n' +
+        '[STARTED] Reading package-lock.json...\n' +
+        '[SUCCESS] Reading package-lock.json...\n' +
+        '[STARTED] Reading package.json...\n' +
+        '[SUCCESS] Reading package.json...\n' +
+        '[STARTED] Validating package-lock.json...\n' +
+        '[SUCCESS] Validating package-lock.json...\n' +
+        '[STARTED] Validating package.json...\n' +
+        '[SUCCESS] Validating package.json...\n' +
+        '[STARTED] Computing which dependency versions are to pin...\n' +
+        '[SUCCESS] Computing which dependency versions are to pin...\n' +
+        '[STARTED] Output dependency versions that can be pinned...\n' +
+        '[TITLE] All dependency versions are already pinned :)\n' +
+        '[SUCCESS] Output dependency versions that can be pinned...\n' +
+        '[STARTED] Updating package.json...\n' +
+        '[SKIPPED] Update is disabled by default.\n' +
+        '[SUCCESS] All dependency versions are already pinned :)',
+    );
+  }, 10000);
 });
