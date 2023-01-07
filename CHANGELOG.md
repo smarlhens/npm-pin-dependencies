@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.1.2...v0.1.3) (2023-01-07)
+
+
+### Bug Fixes
+
+* handle package with only dev dependencies ([05dfc4a](https://github.com/smarlhens/npm-pin-dependencies/commit/05dfc4ada5e1115ff678d7c83f17e95858488538))
+
 ## [0.1.2](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.1.1...v0.1.2) (2023-01-07)
 
 
