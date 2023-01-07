@@ -255,7 +255,7 @@ const pinDependenciesTasks = ({
         }
 
         for (const dependencyName of Object.keys(packageJson[dependencyType])) {
-          const packageLockDependency = packageLock.packages[dependencyName].version;
+          const packageLockDependency = packageLock.packages[`node_modules/${dependencyName}`].version;
           if (!packageLockDependency) {
             continue;
           }
