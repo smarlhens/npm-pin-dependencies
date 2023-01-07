@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.1.1...v0.1.2) (2023-01-07)
+
+
+### Chores
+
+* **npm:** remove postinstall script ([0ed218e](https://github.com/smarlhens/npm-pin-dependencies/commit/0ed218eb834565b2bdfe44fe9b5a30f84856b990))
+
 ## [0.1.1](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.1.0...v0.1.1) (2023-01-07)
 
 
