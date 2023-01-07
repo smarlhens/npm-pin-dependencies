@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.1.0...v0.1.1) (2023-01-07)
+
+
+### Bug Fixes
+
+* find up package.json file used by update notifier ([07d267f](https://github.com/smarlhens/npm-pin-dependencies/commit/07d267fda211f7e284f7aedd222aa8c5be42b866))
+
 ## 0.1.0 (2023-01-07)
 
 
