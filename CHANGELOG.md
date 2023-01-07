@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.1.3...v0.1.4) (2023-01-07)
+
+
+### Bug Fixes
+
+* read installed versions from package-lock.json ([3113ac5](https://github.com/smarlhens/npm-pin-dependencies/commit/3113ac5ea63bb2b544bdaf62bf274c28610a0faa))
+
 ## [0.1.3](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.1.2...v0.1.3) (2023-01-07)
 
 
