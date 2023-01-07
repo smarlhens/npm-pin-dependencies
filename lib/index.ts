@@ -21,7 +21,7 @@ type PackageJson = {
 };
 
 type PackageLock = {
-  packages: { '': PackageJson };
+  packages: { [dependencyName: string]: { version: string } };
 };
 
 type VersionToPin = {
@@ -255,7 +255,7 @@ const pinDependenciesTasks = ({
         }
 
         for (const dependencyName of Object.keys(packageJson[dependencyType])) {
-          const packageLockDependency = packageLock.packages[''][dependencyType][dependencyName];
+          const packageLockDependency = packageLock.packages[dependencyName].version;
           if (!packageLockDependency) {
             continue;
           }
