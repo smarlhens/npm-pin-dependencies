@@ -1,7 +1,7 @@
 #!/usr/bin/env node
+import { findUp } from 'find-up';
 import fs from 'node:fs/promises';
 import { dirname } from 'node:path';
-import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import updateNotifier from 'update-notifier';
 
@@ -9,10 +9,8 @@ import { npd } from '../lib/index.js';
 import { cli } from '../lib/yargs.js';
 
 (async () => {
-  const packageJsonPath = `../package.json` as const;
-  const cliArgs = await cli;
-  const pathToFile = join(dirname(fileURLToPath(import.meta.url)), packageJsonPath);
-  const packageJson = JSON.parse(await fs.readFile(pathToFile, 'utf8'));
+  const packageJsonPath = await findUp('package.json', { type: 'file', cwd: dirname(fileURLToPath(import.meta.url)) });
+  const packageJson = JSON.parse(await fs.readFile(packageJsonPath!, 'utf8'));
   const notifier = updateNotifier({
     pkg: packageJson,
     updateCheckInterval: 1000 * 60,
@@ -26,5 +24,6 @@ import { cli } from '../lib/yargs.js';
     });
   }
 
+  const cliArgs = await cli;
   await npd(cliArgs);
 })();
