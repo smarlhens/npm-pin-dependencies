@@ -132,7 +132,7 @@ const packageJsonSchema: JSONSchemaType<PackageJson> = {
       required: [],
     },
   },
-  required: ['dependencies'],
+  required: [],
 };
 
 // @ts-ignore

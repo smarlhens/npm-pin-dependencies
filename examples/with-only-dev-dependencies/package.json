@@ -1,0 +1,7 @@
+{
+  "name": "fake",
+  "private": true,
+  "devDependencies": {
+    "fake-dev-package-1": "2.0.0"
+  }
+}
