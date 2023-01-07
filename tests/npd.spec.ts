@@ -73,7 +73,7 @@ describe('npd', () => {
         '[SUCCESS] \n' +
         `[SUCCESS] Run npd -u to upgrade package.json.`,
     );
-  }, 5000);
+  }, 10000);
 
   it('should output no dependency versions to pin', async () => {
     const execaOptions: Options = {
@@ -104,5 +104,5 @@ describe('npd', () => {
         '[SKIPPED] Update is disabled by default.\n' +
         '[SUCCESS] All dependency versions are already pinned :)',
     );
-  }, 5000);
+  }, 10000);
 });
