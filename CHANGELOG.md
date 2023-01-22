@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.2.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.1.5...v0.2.0) (2023-01-22)
+
+
+### Features
+
+* expose pin function from string ([0f2bcdc](https://github.com/smarlhens/npm-pin-dependencies/commit/0f2bcdcd172f2bf2ce6ac8208c354372ceaeb316))
+
+
+### Bug Fixes
+
+* **deps:** update dependency listr2 to v5.0.7 ([689807f](https://github.com/smarlhens/npm-pin-dependencies/commit/689807fb2fcd31019947fb78808269d257150391))
+* update jsonschema pattern for lock file ([f1e9587](https://github.com/smarlhens/npm-pin-dependencies/commit/f1e958727a0cfd60084d42bc00069c4b241a749c))
+
+
+### Chores
+
+* **deps:** update commitlint monorepo to v17.4.2 ([673fe7c](https://github.com/smarlhens/npm-pin-dependencies/commit/673fe7c32652c6b2aadceaeff4b33f77b0738737))
+* **deps:** update dependency @swc/core to v1.3.27 ([85ec48e](https://github.com/smarlhens/npm-pin-dependencies/commit/85ec48eab2448099bd48a2b4499e82f6b7456a3c))
+* **deps:** update dependency @types/yargs to v17.0.20 ([287fb48](https://github.com/smarlhens/npm-pin-dependencies/commit/287fb48510f7cc6cd7722c8bb4c79c26456cc2ac))
+* **deps:** update dependency prettier to v2.8.3 ([fd596cf](https://github.com/smarlhens/npm-pin-dependencies/commit/fd596cf3f81b53d1800e07a4ea5b7136593c8c5a))
+* **deps:** update dependency rimraf to v4 ([7ed7c55](https://github.com/smarlhens/npm-pin-dependencies/commit/7ed7c55e61cb45f91cc911970e12a7ba3da633ab))
+* **deps:** update vitest monorepo to v0.27.2 ([e02e619](https://github.com/smarlhens/npm-pin-dependencies/commit/e02e61908e48c2d897af6aff3173a9791f2f8185))
+
 ## [0.1.5](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.1.4...v0.1.5) (2023-01-07)
 
 
