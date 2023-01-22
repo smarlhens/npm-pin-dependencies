@@ -8,7 +8,7 @@
   "minify": true,
   "dts": {
     "resolve": true,
-    "entry": "lib/index.ts"
+    "entry": "lib/npd.ts"
   },
   "clean": true,
   "format": ["cjs", "esm"],
