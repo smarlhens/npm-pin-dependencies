@@ -141,10 +141,17 @@ const packageLockSchema: JSONSchemaType<PackageLock> = {
   properties: {
     packages: {
       type: 'object',
-      properties: {
-        '': packageJsonSchema,
+      patternProperties: {
+        '^.*$': {
+          type: 'object',
+          properties: {
+            version: {
+              type: 'string',
+            },
+          },
+          required: ['version'],
+        },
       },
-      required: [''],
     },
   },
   required: ['packages'],
