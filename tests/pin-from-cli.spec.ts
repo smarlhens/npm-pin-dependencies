@@ -2,7 +2,7 @@ import { execaCommand, Options } from 'execa';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-describe('npd', () => {
+describe('pin from cli', () => {
   it('should output dependency versions to pin', async () => {
     const execaOptions: Options = {
       cwd: resolve(process.cwd(), 'examples', 'with-versions-to-pin'),

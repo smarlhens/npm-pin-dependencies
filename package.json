@@ -28,14 +28,14 @@
   "type": "module",
   "exports": {
     ".": {
-      "require": "./dist/lib/index.js",
-      "import": "./dist/lib/index.mjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/lib/npd.js",
+      "import": "./dist/lib/npd.mjs",
+      "types": "./dist/npd.d.ts"
     }
   },
-  "main": "./dist/lib/index.js",
-  "module": "./dist/lib/index.mjs",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/lib/npd.js",
+  "module": "./dist/lib/npd.mjs",
+  "types": "./dist/npd.d.ts",
   "bin": {
     "npd": "./dist/bin/npd.js",
     "npm-pin-dependencies": "./dist/bin/npd.js"
@@ -83,18 +83,18 @@
     "@types/semver": "7.3.13",
     "@types/update-notifier": "6.0.1",
     "@types/yargs": "17.0.20",
-    "@vitest/coverage-c8": "0.27.2",
+    "@vitest/coverage-c8": "0.27.3",
     "execa": "6.1.0",
     "husky": "8.0.3",
     "lint-staged": "13.1.0",
     "prettier": "2.8.3",
     "rimraf": "4.1.1",
-    "sort-package-json": "2.1.0",
+    "sort-package-json": "2.2.0",
     "ts-node": "10.9.1",
     "tslib": "2.4.1",
     "tsup": "6.5.0",
     "typescript": "4.9.4",
-    "vitest": "0.27.2"
+    "vitest": "0.27.3"
   },
   "engines": {
     "node": "^16.13.0 || ^18.0.0",

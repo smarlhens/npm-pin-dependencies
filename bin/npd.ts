@@ -5,7 +5,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import updateNotifier from 'update-notifier';
 
-import { npd } from '../lib/index.js';
+import { pinDependenciesFromCLI } from '../lib/npd.js';
 import { cli } from '../lib/yargs.js';
 
 (async () => {
@@ -25,5 +25,5 @@ import { cli } from '../lib/yargs.js';
   }
 
   const cliArgs = await cli;
-  await npd(cliArgs);
+  await pinDependenciesFromCLI(cliArgs);
 })();

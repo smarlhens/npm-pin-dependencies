@@ -30,11 +30,11 @@ type VersionToPin = {
   pinnedVersion: string;
 };
 
-type Context = {
+export type PinDependenciesContext = {
   packageLockString: string;
   packageJsonString: string;
-  packageJson: PackageJson;
-  versionsToPin: VersionToPin[];
+  packageJson?: PackageJson | undefined;
+  versionsToPin?: VersionToPin[] | undefined;
 };
 
 type Options = {
@@ -75,7 +75,7 @@ const renderer = (
   return { renderer: 'default', rendererOptions: { dateFormat: false } };
 };
 
-export const npd = async (args: CLIArgs): Promise<Context> => {
+export const pinDependenciesFromCLI = async (args: CLIArgs): Promise<PinDependenciesContext> => {
   const cliArgs = args;
 
   let options: Options = {
@@ -100,7 +100,6 @@ export const npd = async (args: CLIArgs): Promise<Context> => {
   return pinDependenciesCommand({
     options,
     context,
-    debug,
   }).run();
 };
 
@@ -188,7 +187,7 @@ const createOutputTable = (colWidths: number[]): Table => {
   });
 };
 
-export const generateUpdateCommandFromContext = (options: Options): string => {
+const generateUpdateCommandFromContext = (options: Options): string => {
   const argv: string[] = ['npd'];
 
   if (options.quiet) {
@@ -208,30 +207,67 @@ export const generateUpdateCommandFromContext = (options: Options): string => {
   return argv.join(' ');
 };
 
+export const pinDependenciesFromString = (ctx: PinDependenciesContext): void => {
+  const packageLock: PackageLock = JSON.parse(ctx.packageLockString);
+  let packageJson: PackageJson = JSON.parse(ctx.packageJsonString);
+  const versionsToPin: VersionToPin[] = [];
+  const dependencyTypes: (keyof PackageJson)[] = ['dependencies', 'devDependencies', 'optionalDependencies'];
+  for (const dependencyType of dependencyTypes) {
+    if (!(dependencyType in packageJson)) {
+      continue;
+    }
+
+    for (const dependencyName of Object.keys(packageJson[dependencyType])) {
+      const packageLockDependency = packageLock.packages[`node_modules/${dependencyName}`].version;
+      if (!packageLockDependency) {
+        continue;
+      }
+
+      const installedVersion = packageLockDependency;
+      const requiredVersion = packageJson[dependencyType][dependencyName];
+      if (!semver.clean(requiredVersion)) {
+        debug(
+          `Dependency ${chalk.white(dependencyName)} version is not pinned: ${chalk.red(
+            requiredVersion,
+          )} -> ${chalk.green(installedVersion)}.`,
+        );
+        versionsToPin.push({
+          dependency: dependencyName,
+          version: requiredVersion,
+          pinnedVersion: installedVersion,
+        });
+        packageJson[dependencyType][dependencyName] = installedVersion;
+      } else {
+        debug(`Dependency ${chalk.white(dependencyName)} version is already pinned.`);
+      }
+    }
+  }
+  ctx.packageJson = packageJson;
+  ctx.versionsToPin = versionsToPin;
+};
+
 const pinDependenciesTasks = ({
   options,
   parent,
-  debug,
 }: {
   options: Options;
-  parent: Omit<ListrTaskWrapper<Context, typeof ListrRenderer>, 'skip' | 'enabled'>;
-  debug: Debugger;
-}): ListrTask<Context>[] => [
+  parent: Omit<ListrTaskWrapper<PinDependenciesContext, typeof ListrRenderer>, 'skip' | 'enabled'>;
+}): ListrTask<PinDependenciesContext>[] => [
   {
     title: 'Reading package-lock.json...',
-    task: async (ctx: Context) => {
+    task: async (ctx: PinDependenciesContext) => {
       ctx.packageLockString = await fs.readFile(options.packageLockPath, 'utf8');
     },
   },
   {
     title: 'Reading package.json...',
-    task: async (ctx: Context) => {
+    task: async (ctx: PinDependenciesContext) => {
       ctx.packageJsonString = await fs.readFile(options.packageJsonPath, 'utf8');
     },
   },
   {
     title: 'Validating package-lock.json...',
-    task: (ctx: Context) => {
+    task: (ctx: PinDependenciesContext) => {
       const packageLockValidator = ajv.compile(packageLockSchema);
       const isValid = packageLockValidator(JSON.parse(ctx.packageLockString));
       if (!isValid) {
@@ -241,7 +277,7 @@ const pinDependenciesTasks = ({
   },
   {
     title: 'Validating package.json...',
-    task: (ctx: Context) => {
+    task: (ctx: PinDependenciesContext) => {
       const packageJsonValidator = ajv.compile(packageJsonSchema);
       const isValid = packageJsonValidator(JSON.parse(ctx.packageJsonString));
       if (!isValid) {
@@ -251,53 +287,17 @@ const pinDependenciesTasks = ({
   },
   {
     title: 'Computing which dependency versions are to pin...',
-    task: (ctx: Context) => {
-      const packageLock: PackageLock = JSON.parse(ctx.packageLockString);
-      let packageJson: PackageJson = JSON.parse(ctx.packageJsonString);
-      const versionsToPin: VersionToPin[] = [];
-      const dependencyTypes: (keyof PackageJson)[] = ['dependencies', 'devDependencies', 'optionalDependencies'];
-      for (const dependencyType of dependencyTypes) {
-        if (!(dependencyType in packageJson)) {
-          continue;
-        }
-
-        for (const dependencyName of Object.keys(packageJson[dependencyType])) {
-          const packageLockDependency = packageLock.packages[`node_modules/${dependencyName}`].version;
-          if (!packageLockDependency) {
-            continue;
-          }
-
-          const installedVersion = packageLockDependency;
-          const requiredVersion = packageJson[dependencyType][dependencyName];
-          if (!semver.clean(requiredVersion)) {
-            debug(
-              `Dependency ${chalk.white(dependencyName)} version is not pinned: ${chalk.red(
-                requiredVersion,
-              )} -> ${chalk.green(installedVersion)}.`,
-            );
-            versionsToPin.push({
-              dependency: dependencyName,
-              version: requiredVersion,
-              pinnedVersion: installedVersion,
-            });
-            packageJson[dependencyType][dependencyName] = installedVersion;
-          } else {
-            debug(`Dependency ${chalk.white(dependencyName)} version is already pinned.`);
-          }
-        }
-      }
-      ctx.packageJson = packageJson;
-      ctx.versionsToPin = versionsToPin;
-    },
+    task: pinDependenciesFromString,
   },
   {
     title: 'Output dependency versions that can be pinned...',
-    task: (ctx: Context) => {
+    task: (ctx: PinDependenciesContext) => {
+      const versionsToPin = ctx.versionsToPin!;
       const arrowSeparator: string = '→';
       let colWidths: [number, number, number, number] = [2, 2, 2, 2];
       let colValues: [string, string, string, string][] = [];
 
-      for (const { pinnedVersion, version, dependency } of ctx.versionsToPin) {
+      for (const { pinnedVersion, version, dependency } of versionsToPin) {
         colWidths = [
           Math.max(colWidths[0], dependency.length + 2),
           Math.max(colWidths[1], version.length + 2),
@@ -307,7 +307,7 @@ const pinDependenciesTasks = ({
         colValues.push([dependency, version, arrowSeparator, pinnedVersion]);
       }
 
-      if (0 === ctx.versionsToPin.length) {
+      if (0 === versionsToPin.length) {
         parent.title = `All dependency versions are already pinned ${chalk.green(':)')}`;
       } else {
         const table: Table = createOutputTable(colWidths);
@@ -325,26 +325,24 @@ const pinDependenciesTasks = ({
   {
     title: 'Updating package.json...',
     skip: () => (!options.update ? 'Update is disabled by default.' : !options.update),
-    task: (ctx: Context) => {
+    task: (ctx: PinDependenciesContext) => {
       return fs.writeFile(options.packageJsonPath, JSON.stringify(ctx.packageJson, null, 2));
     },
   },
 ];
 
-export const pinDependenciesCommand = ({
+const pinDependenciesCommand = ({
   options,
   context,
-  debug,
 }: {
   options: Options;
-  context: ListrBaseClassOptions<Context, ListrRendererValue>;
-  debug: Debugger;
-}): Listr<Context, ListrRendererValue> => {
+  context: ListrBaseClassOptions<PinDependenciesContext, ListrRendererValue>;
+}): Listr<PinDependenciesContext, ListrRendererValue> => {
   return new Listr(
     [
       {
         title: `Pinning dependency versions in package.json file...`,
-        task: (_, task) => task.newListr(parent => pinDependenciesTasks({ parent, debug, options })),
+        task: (_, task) => task.newListr(parent => pinDependenciesTasks({ parent, options })),
       },
     ],
     context,
