@@ -28,13 +28,13 @@
   "type": "module",
   "exports": {
     ".": {
-      "require": "./dist/lib/npd.js",
-      "import": "./dist/lib/npd.mjs",
+      "require": "./dist/lib/npd.cjs",
+      "import": "./dist/lib/npd.js",
       "types": "./dist/npd.d.ts"
     }
   },
-  "main": "./dist/lib/npd.js",
-  "module": "./dist/lib/npd.mjs",
+  "main": "./dist/lib/npd.cjs",
+  "module": "./dist/lib/npd.js",
   "types": "./dist/npd.d.ts",
   "bin": {
     "npd": "./dist/bin/npd.js",
