@@ -20,14 +20,32 @@ type PackageJson = {
   optionalDependencies: Dependencies;
 };
 
-type PackageLock = {
+type PackageLockVersion1 = {
+  lockfileVersion: 1;
+  dependencies: { [dependencyName: string]: { version: string } };
+};
+
+type PackageLockVersion2 = {
+  lockfileVersion: 2;
   packages: { [dependencyName: string]: { version: string } };
 };
+
+type PackageLock = PackageLockVersion1 | PackageLockVersion2;
 
 type VersionToPin = {
   dependency: string;
   version: string;
   pinnedVersion: string;
+};
+
+export type PinDependenciesInput = {
+  packageLockString: string;
+  packageJsonString: string;
+};
+
+export type PinDependenciesOutput = {
+  packageJson: PackageJson;
+  versionsToPin: VersionToPin[];
 };
 
 export type PinDependenciesContext = {
@@ -138,22 +156,53 @@ const packageJsonSchema: JSONSchemaType<PackageJson> = {
 const packageLockSchema: JSONSchemaType<PackageLock> = {
   type: 'object',
   properties: {
-    packages: {
-      type: 'object',
-      patternProperties: {
-        '^.*$': {
-          type: 'object',
-          properties: {
-            version: {
-              type: 'string',
-            },
-          },
-          required: ['version'],
-        },
-      },
+    lockfileVersion: {
+      type: 'number',
     },
   },
-  required: ['packages'],
+  required: ['lockfileVersion'],
+  oneOf: [
+    {
+      type: 'object',
+      properties: {
+        packages: {
+          type: 'object',
+          patternProperties: {
+            '^.*$': {
+              type: 'object',
+              properties: {
+                version: {
+                  type: 'string',
+                },
+              },
+              required: ['version'],
+            },
+          },
+        },
+      },
+      required: ['packages'],
+    },
+    {
+      type: 'object',
+      properties: {
+        dependencies: {
+          type: 'object',
+          patternProperties: {
+            '^.*$': {
+              type: 'object',
+              properties: {
+                version: {
+                  type: 'string',
+                },
+              },
+              required: ['version'],
+            },
+          },
+        },
+      },
+      required: ['dependencies'],
+    },
+  ],
 };
 
 const createOutputTable = (colWidths: number[]): Table => {
@@ -207,7 +256,7 @@ const generateUpdateCommandFromContext = (options: Options): string => {
   return argv.join(' ');
 };
 
-export const pinDependenciesFromString = (ctx: PinDependenciesContext): void => {
+export const pinDependenciesFromString = (ctx: PinDependenciesInput): PinDependenciesOutput => {
   const packageLock: PackageLock = JSON.parse(ctx.packageLockString);
   let packageJson: PackageJson = JSON.parse(ctx.packageJsonString);
   const versionsToPin: VersionToPin[] = [];
@@ -218,14 +267,21 @@ export const pinDependenciesFromString = (ctx: PinDependenciesContext): void => 
     }
 
     for (const dependencyName of Object.keys(packageJson[dependencyType])) {
-      const packageLockDependency = packageLock.packages[`node_modules/${dependencyName}`].version;
+      let packageLockDependency;
+
+      if (packageLock.lockfileVersion === 1) {
+        packageLockDependency = packageLock.dependencies[dependencyName].version;
+      } else if (packageLock.lockfileVersion === 2) {
+        packageLockDependency = packageLock.packages[`node_modules/${dependencyName}`].version;
+      }
+
       if (!packageLockDependency) {
         continue;
       }
 
       const installedVersion = packageLockDependency;
       const requiredVersion = packageJson[dependencyType][dependencyName];
-      if (!semver.clean(requiredVersion)) {
+      if (!semver.clean(requiredVersion, { loose: true })) {
         debug(
           `Dependency ${chalk.white(dependencyName)} version is not pinned: ${chalk.red(
             requiredVersion,
@@ -242,8 +298,11 @@ export const pinDependenciesFromString = (ctx: PinDependenciesContext): void => 
       }
     }
   }
-  ctx.packageJson = packageJson;
-  ctx.versionsToPin = versionsToPin;
+
+  return {
+    packageJson,
+    versionsToPin,
+  };
 };
 
 const pinDependenciesTasks = ({
@@ -287,7 +346,9 @@ const pinDependenciesTasks = ({
   },
   {
     title: 'Computing which dependency versions are to pin...',
-    task: pinDependenciesFromString,
+    task: (ctx: PinDependenciesContext) => {
+      Object.assign(ctx, pinDependenciesFromString(ctx));
+    },
   },
   {
     title: 'Output dependency versions that can be pinned...',
