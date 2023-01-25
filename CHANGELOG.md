@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.3.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.2.0...v0.3.0) (2023-01-25)
+
+
+### Features
+
+* support lock file version 1 ([310f882](https://github.com/smarlhens/npm-pin-dependencies/commit/310f8827c303c7ec6fce81877e40be3cf42c1e57))
+
+
+### Bug Fixes
+
+* export esm & cjs ([0b28b3e](https://github.com/smarlhens/npm-pin-dependencies/commit/0b28b3e1df75540e4eeba0376aa7bda015ded3b6))
+
+
+### Chores
+
+* **deps:** update dependency @swc/core to v1.3.28 ([b4e0c95](https://github.com/smarlhens/npm-pin-dependencies/commit/b4e0c959266b43b95389b0b665055939cd4d67d0))
+* **deps:** update dependency rimraf to v4.1.2 ([3d1417d](https://github.com/smarlhens/npm-pin-dependencies/commit/3d1417d4ce0f59a541993e2b2f7a3214cb55fbf4))
+* **deps:** update vitest monorepo to v0.28.1 ([ce053b5](https://github.com/smarlhens/npm-pin-dependencies/commit/ce053b5455b2e8a814e7c4bfd3dc9eda1428ccd8))
+
 ## [0.2.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.1.5...v0.2.0) (2023-01-22)
 
 
