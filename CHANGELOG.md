@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.3.1](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.3.0...v0.3.1) (2023-01-28)
+
+
+### Chores
+
+* **deps:** update dependency @swc/core to v1.3.29 ([dff43e4](https://github.com/smarlhens/npm-pin-dependencies/commit/dff43e433aa25da7a9ad972bf087ce52c079bab6))
+* **deps:** update dependency tslib to v2.5.0 ([0dd6bac](https://github.com/smarlhens/npm-pin-dependencies/commit/0dd6bac891b4867048017db84993c7adff10a90a))
+* **deps:** update vitest monorepo to v0.28.2 ([84f2b71](https://github.com/smarlhens/npm-pin-dependencies/commit/84f2b71f15b17cf0faf73e59c4915ceb41b413b6))
+* **deps:** update vitest monorepo to v0.28.3 ([530bf43](https://github.com/smarlhens/npm-pin-dependencies/commit/530bf4356158f54b0d8d4722f4381baef6c2618f))
+
+
+### Miscellaneous
+
+* context type syntax ([be3ee41](https://github.com/smarlhens/npm-pin-dependencies/commit/be3ee418fd9b827f15941c35fbc1140e1abd18fd))
+
 ## [0.3.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.2.0...v0.3.0) (2023-01-25)
 
 
