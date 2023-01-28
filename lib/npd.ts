@@ -48,12 +48,7 @@ export type PinDependenciesOutput = {
   versionsToPin: VersionToPin[];
 };
 
-export type PinDependenciesContext = {
-  packageLockString: string;
-  packageJsonString: string;
-  packageJson?: PackageJson | undefined;
-  versionsToPin?: VersionToPin[] | undefined;
-};
+export type PinDependenciesContext = PinDependenciesInput & Partial<PinDependenciesOutput>;
 
 type Options = {
   workingDir: string;
