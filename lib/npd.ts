@@ -20,17 +20,24 @@ type PackageJson = {
   optionalDependencies: Dependencies;
 };
 
+type LockDependencies = { [dependencyName: string]: { version: string } };
+type PackageLockDependencies = { dependencies: LockDependencies };
+type PackageLockPackages = { packages: LockDependencies };
+
 type PackageLockVersion1 = {
   lockfileVersion: 1;
-  dependencies: { [dependencyName: string]: { version: string } };
-};
+} & PackageLockDependencies;
 
 type PackageLockVersion2 = {
   lockfileVersion: 2;
-  packages: { [dependencyName: string]: { version: string } };
-};
+} & Partial<PackageLockPackages> &
+  PackageLockDependencies;
 
-type PackageLock = PackageLockVersion1 | PackageLockVersion2;
+type PackageLockVersion3 = {
+  lockfileVersion: 3;
+} & PackageLockPackages;
+
+type PackageLock = PackageLockVersion1 | PackageLockVersion2 | PackageLockVersion3;
 
 type VersionToPin = {
   dependency: string;
@@ -151,51 +158,47 @@ const packageJsonSchema: JSONSchemaType<PackageJson> = {
 const packageLockSchema: JSONSchemaType<PackageLock> = {
   type: 'object',
   properties: {
-    lockfileVersion: {
-      type: 'number',
+    lockfileVersion: { type: 'number', enum: [1, 2, 3] },
+    dependencies: {
+      type: 'object',
+      patternProperties: {
+        '^.*$': {
+          type: 'object',
+          properties: {
+            version: { type: 'string' },
+          },
+          required: ['version'],
+        },
+      },
+    },
+    packages: {
+      type: 'object',
+      patternProperties: {
+        '^.*$': {
+          type: 'object',
+          properties: {
+            version: { type: 'string' },
+          },
+          required: ['version'],
+        },
+      },
     },
   },
   required: ['lockfileVersion'],
   oneOf: [
     {
-      type: 'object',
-      properties: {
-        packages: {
-          type: 'object',
-          patternProperties: {
-            '^.*$': {
-              type: 'object',
-              properties: {
-                version: {
-                  type: 'string',
-                },
-              },
-              required: ['version'],
-            },
-          },
-        },
-      },
-      required: ['packages'],
+      properties: { lockfileVersion: { const: 1 } },
+      required: ['dependencies'],
+      not: { required: ['packages'] },
     },
     {
-      type: 'object',
-      properties: {
-        dependencies: {
-          type: 'object',
-          patternProperties: {
-            '^.*$': {
-              type: 'object',
-              properties: {
-                version: {
-                  type: 'string',
-                },
-              },
-              required: ['version'],
-            },
-          },
-        },
-      },
+      properties: { lockfileVersion: { const: 2 } },
       required: ['dependencies'],
+    },
+    {
+      properties: { lockfileVersion: { const: 3 } },
+      required: ['packages'],
+      not: { required: ['dependencies'] },
     },
   ],
 };
@@ -251,6 +254,26 @@ const generateUpdateCommandFromContext = (options: Options): string => {
   return argv.join(' ');
 };
 
+export const validatePackageLock = (ctx: Pick<PinDependenciesInput, 'packageLockString'>): boolean => {
+  const packageLockValidator = ajv.compile(packageLockSchema);
+  const isValid = packageLockValidator(JSON.parse(ctx.packageLockString));
+  if (!isValid) {
+    throw new Error(`Invalid package-lock.json: ${ajv.errorsText(packageLockValidator.errors)}`);
+  }
+
+  return isValid;
+};
+
+export const validatePackageJson = (ctx: Pick<PinDependenciesInput, 'packageJsonString'>): boolean => {
+  const packageJsonValidator = ajv.compile(packageJsonSchema);
+  const isValid = packageJsonValidator(JSON.parse(ctx.packageJsonString));
+  if (!isValid) {
+    throw new Error(`Invalid package.json: ${ajv.errorsText(packageJsonValidator.errors)}`);
+  }
+
+  return isValid;
+};
+
 export const pinDependenciesFromString = (ctx: PinDependenciesInput): PinDependenciesOutput => {
   const packageLock: PackageLock = JSON.parse(ctx.packageLockString);
   let packageJson: PackageJson = JSON.parse(ctx.packageJsonString);
@@ -267,6 +290,10 @@ export const pinDependenciesFromString = (ctx: PinDependenciesInput): PinDepende
       if (packageLock.lockfileVersion === 1) {
         packageLockDependency = packageLock.dependencies[dependencyName].version;
       } else if (packageLock.lockfileVersion === 2) {
+        packageLockDependency = packageLock.packages
+          ? packageLock.packages[`node_modules/${dependencyName}`].version
+          : packageLock.dependencies[dependencyName].version;
+      } else if (packageLock.lockfileVersion === 3) {
         packageLockDependency = packageLock.packages[`node_modules/${dependencyName}`].version;
       }
 
@@ -322,21 +349,13 @@ const pinDependenciesTasks = ({
   {
     title: 'Validating package-lock.json...',
     task: (ctx: PinDependenciesContext) => {
-      const packageLockValidator = ajv.compile(packageLockSchema);
-      const isValid = packageLockValidator(JSON.parse(ctx.packageLockString));
-      if (!isValid) {
-        throw new Error(`Invalid package-lock.json: ${ajv.errorsText(packageLockValidator.errors)}`);
-      }
+      validatePackageLock(ctx);
     },
   },
   {
     title: 'Validating package.json...',
     task: (ctx: PinDependenciesContext) => {
-      const packageJsonValidator = ajv.compile(packageJsonSchema);
-      const isValid = packageJsonValidator(JSON.parse(ctx.packageJsonString));
-      if (!isValid) {
-        throw new Error(`Invalid package.json: ${ajv.errorsText(packageJsonValidator.errors)}`);
-      }
+      validatePackageJson(ctx);
     },
   },
   {

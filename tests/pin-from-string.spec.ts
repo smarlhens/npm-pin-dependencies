@@ -120,4 +120,56 @@ describe('pin from string', () => {
       versionsToPin: [],
     });
   });
+
+  it('should return no dependency versions to pin from lock file version 3', async () => {
+    const params: PinDependenciesContext = {
+      packageJsonString: '{"name":"fake","private":true,"dependencies":{"fake-package-1":"1.0.0"}}',
+      packageLockString:
+        '{"name":"fake","lockfileVersion":3,"requires":true,"packages":{"node_modules/fake-package-1":{"version":"1.0.0"}}}',
+    };
+    const payload = pinDependenciesFromString(params);
+    expect(payload).toEqual({
+      packageJson: { name: 'fake', private: true, dependencies: { 'fake-package-1': '1.0.0' } },
+      versionsToPin: [],
+    });
+  });
+
+  it('should return no dependency versions to pin from lock file version 2 w/ dependencies only', async () => {
+    const params: PinDependenciesContext = {
+      packageJsonString: '{"name":"fake","private":true,"dependencies":{"fake-package-1":"1.0.0"}}',
+      packageLockString:
+        '{"name":"fake","lockfileVersion":2,"requires":true,"dependencies":{"fake-package-1":{"version":"1.0.0"}}}',
+    };
+    const payload = pinDependenciesFromString(params);
+    expect(payload).toEqual({
+      packageJson: { name: 'fake', private: true, dependencies: { 'fake-package-1': '1.0.0' } },
+      versionsToPin: [],
+    });
+  });
+
+  it('should return no dependency versions to pin from lock file version 2 w/ packages only', async () => {
+    const params: PinDependenciesContext = {
+      packageJsonString: '{"name":"fake","private":true,"dependencies":{"fake-package-1":"1.0.0"}}',
+      packageLockString:
+        '{"name":"fake","lockfileVersion":2,"requires":true,"packages":{"node_modules/fake-package-1":{"version":"1.0.0"}}}',
+    };
+    const payload = pinDependenciesFromString(params);
+    expect(payload).toEqual({
+      packageJson: { name: 'fake', private: true, dependencies: { 'fake-package-1': '1.0.0' } },
+      versionsToPin: [],
+    });
+  });
+
+  it('should return no dependency versions to pin from lock file version 2 w/ packages & dependencies only', async () => {
+    const params: PinDependenciesContext = {
+      packageJsonString: '{"name":"fake","private":true,"dependencies":{"fake-package-1":"1.0.0"}}',
+      packageLockString:
+        '{"name":"fake","lockfileVersion":2,"requires":true,"packages":{"node_modules/fake-package-1":{"version":"1.0.0"}},"dependencies":{"fake-package-1":{"version":"1.0.0"}}}',
+    };
+    const payload = pinDependenciesFromString(params);
+    expect(payload).toEqual({
+      packageJson: { name: 'fake', private: true, dependencies: { 'fake-package-1': '1.0.0' } },
+      versionsToPin: [],
+    });
+  });
 });
