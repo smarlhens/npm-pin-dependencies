@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.4.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.3.1...v0.4.0) (2023-02-03)
+
+
+### Features
+
+* export validate functions & support lockfileversion 3 ([e011d38](https://github.com/smarlhens/npm-pin-dependencies/commit/e011d384c53991cabc7a4bbbd3d67e28b90b7832))
+
+
+### Chores
+
+* **deps:** update dependency @swc/core to v1.3.30 ([1a17c18](https://github.com/smarlhens/npm-pin-dependencies/commit/1a17c1872e77c8b0a1d0ec2161f2879c3445d805))
+* **deps:** update dependency @swc/core to v1.3.32 ([b5de39d](https://github.com/smarlhens/npm-pin-dependencies/commit/b5de39d1588c75e40e1a1b7e5dc0a199d2eafc8a))
+* **deps:** update dependency @types/yargs to v17.0.22 ([c663c2f](https://github.com/smarlhens/npm-pin-dependencies/commit/c663c2f445e1838e400fb8c670087351239084ce))
+* **deps:** update dependency sort-package-json to v2.3.0 ([61851c7](https://github.com/smarlhens/npm-pin-dependencies/commit/61851c70fcb7ac24b2bbf9ec76455de363a39880))
+* **deps:** update dependency sort-package-json to v2.4.0 ([8141375](https://github.com/smarlhens/npm-pin-dependencies/commit/8141375eaf8348ca3e7d470e7d6bb8488531730d))
+* **deps:** update dependency typescript to v4.9.5 ([3c257da](https://github.com/smarlhens/npm-pin-dependencies/commit/3c257da3f1dee5e047be0eb068b974567750c25c))
+* **deps:** update vitest monorepo to v0.28.4 ([b0ac474](https://github.com/smarlhens/npm-pin-dependencies/commit/b0ac4747b477b408aa9068626cc582580b9a126b))
+
+
+### Documentation
+
+* **README:** add Node usage ([085f019](https://github.com/smarlhens/npm-pin-dependencies/commit/085f019a08c0d944f9b43679eb24fb25b769be67))
+
 ## [0.3.1](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.3.0...v0.3.1) (2023-01-28)
 
 
