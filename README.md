@@ -16,9 +16,10 @@
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)
+  - [CLI](#cli)
+  - [Node](#node)
 - [Options](#options)
 - [Debug](#debug)
-- [Thanks](#thanks)
 
 ---
 
@@ -46,6 +47,8 @@ npx @smarlhens/npm-pin-dependencies
 
 ## Usage
 
+### CLI
+
 Will pin `package.json` dependency versions for the project in the current directory based on the npm `package-lock.json` file:
 
 ```sh
@@ -56,6 +59,31 @@ Upgrade a project's `package.json` file:
 
 ```sh
 $ npd -u
+```
+
+### Node
+
+```typescript
+import { pinDependenciesFromString, validatePackageJson, validatePackageLock } from '@smarlhens/npm-pin-dependencies';
+
+let packageJsonString = ''; // load content of package.json as stringified JSON
+let packageLockString = ''; // load content of package-lock.json as stringified JSON
+
+validatePackageJson({ packageJsonString }); // can throw Errors if unexpected format
+validatePackageLock({ packageLockString }); // can throw Errors if unexpected format
+
+// packageJson is the content of your package.json with pinned dependencies
+// versionsToPin contains changes if you want to display them
+const { versionsToPin, packageJson } = pinDependenciesFromString({
+  packageJsonString,
+  packageLockString,
+});
+console.log(packageJson);
+console.log(
+  versionsToPin
+    .map(({ pinnedVersion, version, dependency }) => `${dependency} version ${version} replaced by ${pinnedVersion}`)
+    .join('\n'),
+);
 ```
 
 ---
