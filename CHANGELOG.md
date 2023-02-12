@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.4.1](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.4.0...v0.4.1) (2023-02-12)
+
+
+### Bug Fixes
+
+* cjs does not support import.meta.url ([194d4a0](https://github.com/smarlhens/npm-pin-dependencies/commit/194d4a0c047a99182a7833e52c4a48d4916743b7))
+* output was truncated ([e3c427d](https://github.com/smarlhens/npm-pin-dependencies/commit/e3c427d3c9d78f7f8c1df581291f763db95bb48c))
+
+
+### Chores
+
+* **deps:** update dependency @swc/core to v1.3.35 ([1a29aa8](https://github.com/smarlhens/npm-pin-dependencies/commit/1a29aa87190a2f55b66ea15c8c3c44dbc4919ff7))
+* **deps:** update dependency @types/node to v18.11.19 ([58eeca1](https://github.com/smarlhens/npm-pin-dependencies/commit/58eeca1ad155d08f6156efef77748b343c797827))
+* **deps:** update dependency @types/node to v18.13.0 ([ed94139](https://github.com/smarlhens/npm-pin-dependencies/commit/ed94139d4e1c5c5d30d0ea7a01e5ebe2c5376b0e))
+* **deps:** update dependency @types/update-notifier to v6.0.2 ([1bc3e4d](https://github.com/smarlhens/npm-pin-dependencies/commit/1bc3e4df7bca7f5de553c7a1ac12cfd65eb913b3))
+* **deps:** update dependency execa to v7 ([ed30c43](https://github.com/smarlhens/npm-pin-dependencies/commit/ed30c43aa503f806523205d9d96b55e02d68b14d))
+* **deps:** update dependency lint-staged to v13.1.1 ([9c4563e](https://github.com/smarlhens/npm-pin-dependencies/commit/9c4563e267b2878697684f4560399e7b61d4c0ce))
+* **deps:** update dependency prettier to v2.8.4 ([3c2370a](https://github.com/smarlhens/npm-pin-dependencies/commit/3c2370ac49b897f7417792807ca422c5ddc35870))
+* **deps:** update dependency sort-package-json to v2.4.1 ([ebabf9d](https://github.com/smarlhens/npm-pin-dependencies/commit/ebabf9de4bfc278499ecbd53e8362f1b2ea7b098))
+* **deps:** update dependency tsup to v6.6.0 ([f3b7bbb](https://github.com/smarlhens/npm-pin-dependencies/commit/f3b7bbb231310372fce65821c6cedfa29d6b5746))
+* **deps:** update dependency tsup to v6.6.2 ([8dd3782](https://github.com/smarlhens/npm-pin-dependencies/commit/8dd37825581a56de0ebff8f07535c601232fa14f))
+* prepare repo for execa update ([cb8b970](https://github.com/smarlhens/npm-pin-dependencies/commit/cb8b970a11499d712bdda0366437b502c741dc3c))
+
 ## [0.4.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.3.1...v0.4.0) (2023-02-03)
 
 
