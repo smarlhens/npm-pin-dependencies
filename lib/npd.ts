@@ -2,7 +2,14 @@ import Ajv, { JSONSchemaType } from 'ajv';
 import chalk from 'chalk';
 import Table from 'cli-table';
 import Debug, { Debugger } from 'debug';
-import { Listr, ListrBaseClassOptions, ListrRenderer, ListrTask, ListrTaskWrapper } from 'listr2';
+import {
+  Listr,
+  ListrBaseClassOptions,
+  ListrGetRendererOptions,
+  ListrRenderer,
+  ListrTask,
+  ListrTaskWrapper,
+} from 'listr2';
 import type { ListrDefaultRendererOptions, ListrRendererValue } from 'listr2';
 import fs from 'node:fs/promises';
 import { join, normalize } from 'node:path';
@@ -78,21 +85,27 @@ const renderer = (
   { debug, quiet, verbose }: { debug?: boolean; quiet?: boolean; verbose?: boolean },
   env = process.env,
 ): ListrDefaultRendererOptions<ListrRendererValue> => {
+  const rendererOptions: ListrGetRendererOptions<ListrRendererValue> = {
+    formatOutput: 'wrap',
+    dateFormat: false,
+    removeEmptyLines: false,
+  };
+
   if (quiet) {
-    return { renderer: 'silent' };
+    return { renderer: 'silent', rendererOptions };
   }
 
   if (verbose) {
-    return { renderer: 'simple' };
+    return { renderer: 'simple', rendererOptions };
   }
 
   const isDumbTerminal = env.TERM === 'dumb';
 
   if (debug || isDumbTerminal || env.NODE_ENV === 'test') {
-    return { renderer: 'verbose' };
+    return { renderer: 'verbose', rendererOptions };
   }
 
-  return { renderer: 'default', rendererOptions: { dateFormat: false } };
+  return { renderer: 'default', rendererOptions };
 };
 
 export const pinDependenciesFromCLI = async (args: CLIArgs): Promise<PinDependenciesContext> => {
@@ -108,7 +121,7 @@ export const pinDependenciesFromCLI = async (args: CLIArgs): Promise<PinDependen
     packageJsonPath: join(process.cwd(), packageJsonFilename),
   };
 
-  const context = {
+  const context: ListrBaseClassOptions<PinDependenciesContext, ListrRendererValue> = {
     ...renderer({ quiet: options.quiet, debug: options.debug, verbose: options.verbose }),
   };
 
