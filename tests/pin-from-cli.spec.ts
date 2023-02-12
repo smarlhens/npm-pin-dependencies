@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { execaCommand, Options } from 'execa';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -47,7 +48,7 @@ describe('pin from cli', () => {
         '[TITLE]  fake-optional-package-2  ~8.0.0            →  8.0.0 \n' +
         '[TITLE]  fake-optional-package-3  9.x               →  9.0.0 \n' +
         '[TITLE] \n' +
-        `[TITLE] Run npd -u to upgrade package.json.\n` +
+        `[TITLE] Run ${chalk.cyan('npd -u')} to upgrade package.json.\n` +
         '[SUCCESS] Output dependency versions that can be pinned...\n' +
         '[STARTED] Updating package.json...\n' +
         '[SKIPPED] Update is disabled by default.\n' +
@@ -71,7 +72,7 @@ describe('pin from cli', () => {
         '[SUCCESS]  fake-optional-package-2  ~8.0.0            →  8.0.0 \n' +
         '[SUCCESS]  fake-optional-package-3  9.x               →  9.0.0 \n' +
         '[SUCCESS] \n' +
-        `[SUCCESS] Run npd -u to upgrade package.json.`,
+        `[SUCCESS] Run ${chalk.cyan('npd -u')} to upgrade package.json.`,
     );
   }, 10000);
 
@@ -98,11 +99,11 @@ describe('pin from cli', () => {
         '[STARTED] Computing which dependency versions are to pin...\n' +
         '[SUCCESS] Computing which dependency versions are to pin...\n' +
         '[STARTED] Output dependency versions that can be pinned...\n' +
-        '[TITLE] All dependency versions are already pinned :)\n' +
+        `[TITLE] All dependency versions are already pinned ${chalk.green(':)')}\n` +
         '[SUCCESS] Output dependency versions that can be pinned...\n' +
         '[STARTED] Updating package.json...\n' +
         '[SKIPPED] Update is disabled by default.\n' +
-        '[SUCCESS] All dependency versions are already pinned :)',
+        `[SUCCESS] All dependency versions are already pinned ${chalk.green(':)')}`,
     );
   }, 10000);
 
@@ -129,11 +130,11 @@ describe('pin from cli', () => {
         '[STARTED] Computing which dependency versions are to pin...\n' +
         '[SUCCESS] Computing which dependency versions are to pin...\n' +
         '[STARTED] Output dependency versions that can be pinned...\n' +
-        '[TITLE] All dependency versions are already pinned :)\n' +
+        `[TITLE] All dependency versions are already pinned ${chalk.green(':)')}\n` +
         '[SUCCESS] Output dependency versions that can be pinned...\n' +
         '[STARTED] Updating package.json...\n' +
         '[SKIPPED] Update is disabled by default.\n' +
-        '[SUCCESS] All dependency versions are already pinned :)',
+        `[SUCCESS] All dependency versions are already pinned ${chalk.green(':)')}`,
     );
   }, 10000);
 
@@ -160,11 +161,11 @@ describe('pin from cli', () => {
         '[STARTED] Computing which dependency versions are to pin...\n' +
         '[SUCCESS] Computing which dependency versions are to pin...\n' +
         '[STARTED] Output dependency versions that can be pinned...\n' +
-        '[TITLE] All dependency versions are already pinned :)\n' +
+        `[TITLE] All dependency versions are already pinned ${chalk.green(':)')}\n` +
         '[SUCCESS] Output dependency versions that can be pinned...\n' +
         '[STARTED] Updating package.json...\n' +
         '[SKIPPED] Update is disabled by default.\n' +
-        '[SUCCESS] All dependency versions are already pinned :)',
+        `[SUCCESS] All dependency versions are already pinned ${chalk.green(':)')}`,
     );
   }, 10000);
 
@@ -191,11 +192,11 @@ describe('pin from cli', () => {
         '[STARTED] Computing which dependency versions are to pin...\n' +
         '[SUCCESS] Computing which dependency versions are to pin...\n' +
         '[STARTED] Output dependency versions that can be pinned...\n' +
-        '[TITLE] All dependency versions are already pinned :)\n' +
+        `[TITLE] All dependency versions are already pinned ${chalk.green(':)')}\n` +
         '[SUCCESS] Output dependency versions that can be pinned...\n' +
         '[STARTED] Updating package.json...\n' +
         '[SKIPPED] Update is disabled by default.\n' +
-        '[SUCCESS] All dependency versions are already pinned :)',
+        `[SUCCESS] All dependency versions are already pinned ${chalk.green(':)')}`,
     );
   }, 10000);
 });
