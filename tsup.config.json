@@ -3,6 +3,7 @@
   "splitting": false,
   "platform": "node",
   "target": "node16",
+  "shims": true,
   "sourcemap": false,
   "bundle": true,
   "minify": true,
