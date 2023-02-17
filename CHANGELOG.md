@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.4.2](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.4.1...v0.4.2) (2023-02-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency yargs to v17.7.0 ([c566497](https://github.com/smarlhens/npm-pin-dependencies/commit/c5664977c67122a197f64e311a9c2756a61923d9))
+* handle undefined dependency or missing version ([f5f0a1b](https://github.com/smarlhens/npm-pin-dependencies/commit/f5f0a1bbce583bb5889711be0ef9a47c3ad9dbbd))
+
+
+### Miscellaneous
+
+* change wording ([24faf6d](https://github.com/smarlhens/npm-pin-dependencies/commit/24faf6d8330c371e126a306c83f61de8554909a3))
+
+
+### Chores
+
+* **deps:** update commitlint monorepo to v17.4.3 ([948c8bd](https://github.com/smarlhens/npm-pin-dependencies/commit/948c8bde27cc21dcff7e27bcefe78a38b13de663))
+* **deps:** update commitlint monorepo to v17.4.4 ([18002aa](https://github.com/smarlhens/npm-pin-dependencies/commit/18002aa9e1b489dfa5b55c439a646ab1c8597476))
+* **deps:** update dependency @types/node to v18.14.0 ([1cf6b13](https://github.com/smarlhens/npm-pin-dependencies/commit/1cf6b13c42b2e1a69db6f04251126d5c08f88210))
+* **deps:** update dependency lint-staged to v13.1.2 ([e77a6a0](https://github.com/smarlhens/npm-pin-dependencies/commit/e77a6a020c2efc12644d599ccfde56acf13c6b95))
+* **deps:** update dependency tsup to v6.6.3 ([bca7b44](https://github.com/smarlhens/npm-pin-dependencies/commit/bca7b44252f831f68b5141aee5c15b0e802f5da3))
+* **deps:** update vitest monorepo to v0.28.5 ([e90b05e](https://github.com/smarlhens/npm-pin-dependencies/commit/e90b05e962f35286f5feaf12a14d824502fcf723))
+
 ## [0.4.1](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.4.0...v0.4.1) (2023-02-12)
 
 
