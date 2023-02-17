@@ -160,11 +160,67 @@ describe('pin from string', () => {
     });
   });
 
-  it('should return no dependency versions to pin from lock file version 2 w/ packages & dependencies only', async () => {
+  it('should return no dependency versions to pin from lock file version 2 w/ packages & dependencies', async () => {
     const params: PinDependenciesContext = {
       packageJsonString: '{"name":"fake","private":true,"dependencies":{"fake-package-1":"1.0.0"}}',
       packageLockString:
         '{"name":"fake","lockfileVersion":2,"requires":true,"packages":{"node_modules/fake-package-1":{"version":"1.0.0"}},"dependencies":{"fake-package-1":{"version":"1.0.0"}}}',
+    };
+    const payload = pinDependenciesFromString(params);
+    expect(payload).toEqual({
+      packageJson: { name: 'fake', private: true, dependencies: { 'fake-package-1': '1.0.0' } },
+      versionsToPin: [],
+    });
+  });
+
+  it('should throw error on unhandled lock file version', async () => {
+    const params: PinDependenciesContext = {
+      packageJsonString: '{"name":"fake","private":true,"dependencies":{"fake-package-1":"1.0.0"}}',
+      packageLockString: '{"name":"fake","lockfileVersion":4,"requires":true}',
+    };
+    expect(() => pinDependenciesFromString(params)).toThrowError(/Lock file version not yet supported./);
+  });
+
+  it('should continue if dependency is undefined in dependencies', async () => {
+    const params: PinDependenciesContext = {
+      packageJsonString: '{"name":"fake","private":true,"dependencies":{"fake-package-1":"1.0.0"}}',
+      packageLockString: '{"name":"fake","lockfileVersion":1,"requires":true,"dependencies":{}}',
+    };
+    const payload = pinDependenciesFromString(params);
+    expect(payload).toEqual({
+      packageJson: { name: 'fake', private: true, dependencies: { 'fake-package-1': '1.0.0' } },
+      versionsToPin: [],
+    });
+  });
+
+  it('should continue if dependency is undefined in packages', async () => {
+    const params: PinDependenciesContext = {
+      packageJsonString: '{"name":"fake","private":true,"dependencies":{"fake-package-1":"1.0.0"}}',
+      packageLockString: '{"name":"fake","lockfileVersion":3,"requires":true,"packages":{}}',
+    };
+    const payload = pinDependenciesFromString(params);
+    expect(payload).toEqual({
+      packageJson: { name: 'fake', private: true, dependencies: { 'fake-package-1': '1.0.0' } },
+      versionsToPin: [],
+    });
+  });
+
+  it('should continue if dependency version is undefined in dependencies', async () => {
+    const params: PinDependenciesContext = {
+      packageJsonString: '{"name":"fake","private":true,"dependencies":{"fake-package-1":"1.0.0"}}',
+      packageLockString: '{"name":"fake","lockfileVersion":1,"requires":true,"dependencies":{"fake-package-1":{}}}',
+    };
+    const payload = pinDependenciesFromString(params);
+    expect(payload).toEqual({
+      packageJson: { name: 'fake', private: true, dependencies: { 'fake-package-1': '1.0.0' } },
+      versionsToPin: [],
+    });
+  });
+
+  it('should continue if dependency version is undefined in packages', async () => {
+    const params: PinDependenciesContext = {
+      packageJsonString: '{"name":"fake","private":true,"dependencies":{"fake-package-1":"1.0.0"}}',
+      packageLockString: '{"name":"fake","lockfileVersion":3,"requires":true,"packages":{"fake-package-1":{}}}',
     };
     const payload = pinDependenciesFromString(params);
     expect(payload).toEqual({
