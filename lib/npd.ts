@@ -27,7 +27,8 @@ type PackageJson = {
   optionalDependencies: Dependencies;
 };
 
-type LockDependencies = { [dependencyName: string]: { version: string } };
+type LockDependency = { version: string };
+type LockDependencies = { [dependencyName: string]: LockDependency };
 type PackageLockDependencies = { dependencies: LockDependencies };
 type PackageLockPackages = { packages: LockDependencies };
 
@@ -298,23 +299,39 @@ export const pinDependenciesFromString = (ctx: PinDependenciesInput): PinDepende
     }
 
     for (const dependencyName of Object.keys(packageJson[dependencyType])) {
-      let packageLockDependency;
+      let dependencyParent: LockDependencies | undefined;
 
       if (packageLock.lockfileVersion === 1) {
-        packageLockDependency = packageLock.dependencies[dependencyName].version;
+        dependencyParent = packageLock.dependencies;
       } else if (packageLock.lockfileVersion === 2) {
-        packageLockDependency = packageLock.packages
-          ? packageLock.packages[`node_modules/${dependencyName}`].version
-          : packageLock.dependencies[dependencyName].version;
+        dependencyParent = packageLock.packages ? packageLock.packages : packageLock.dependencies;
       } else if (packageLock.lockfileVersion === 3) {
-        packageLockDependency = packageLock.packages[`node_modules/${dependencyName}`].version;
+        dependencyParent = packageLock.packages;
+      } else {
+        throw new Error(`Lock file version not yet supported.`);
       }
 
+      let dependencyKey: string = dependencyName;
+      if ('packages' in packageLock) {
+        dependencyKey = `node_modules/${dependencyName}`;
+      }
+
+      let packageLockDependency: LockDependency | undefined = dependencyParent[dependencyKey];
       if (!packageLockDependency) {
+        debug(
+          `Dependency ${chalk.white(dependencyKey)} is undefined in ${chalk.cyan(
+            'packages' in packageLock ? 'packages' : 'dependencies',
+          )}.`,
+        );
         continue;
       }
 
-      const installedVersion = packageLockDependency;
+      if (!('version' in packageLockDependency)) {
+        debug(`Dependency ${chalk.white(dependencyKey)} version is undefined.`);
+        continue;
+      }
+
+      const installedVersion = packageLockDependency.version;
       const requiredVersion = packageJson[dependencyType][dependencyName];
       if (!semver.clean(requiredVersion, { loose: true })) {
         debug(
