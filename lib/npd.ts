@@ -400,7 +400,10 @@ const pinDependenciesTasks = ({
       } else {
         const table: Table = createOutputTable(colWidths);
         table.push(...colValues);
-        let title = `Dependency versions that can be pinned:\n\n${table.toString()}`;
+
+        let title = `${
+          options.update ? 'Dependency versions pinned' : 'Dependency versions that can be pinned'
+        }:\n\n${table.toString()}`;
 
         if (!options.update) {
           title += `\n\nRun ${chalk.cyan(generateUpdateCommandFromContext(options))} to upgrade package.json.`;
