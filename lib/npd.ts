@@ -73,6 +73,7 @@ type Options = {
   debug: boolean;
   packageLockPath: string;
   packageJsonPath: string;
+  enableSaveExact: boolean;
 };
 
 const packageLockFilename = 'package-lock.json' as const;
@@ -118,6 +119,7 @@ export const pinDependenciesFromCLI = async (args: CLIArgs): Promise<PinDependen
     verbose: cliArgs.verbose || false,
     quiet: cliArgs.quiet || false,
     debug: cliArgs.debug || false,
+    enableSaveExact: cliArgs.enableSaveExact || false,
     packageLockPath: join(process.cwd(), packageLockFilename),
     packageJsonPath: join(process.cwd(), packageJsonFilename),
   };
@@ -434,7 +436,29 @@ const pinDependenciesTasks = ({
     title: 'Updating package.json...',
     skip: () => (!options.update ? 'Update is disabled by default.' : !options.update),
     task: (ctx: PinDependenciesContext) => {
-      return fs.writeFile(options.packageJsonPath, JSON.stringify(ctx.packageJson, null, 2));
+      return fs.writeFile(options.packageJsonPath, JSON.stringify(ctx.packageJson, null, 2) + '\n');
+    },
+  },
+  {
+    title: 'Enabling save-exact using .npmrc...',
+    skip: () => (!options.enableSaveExact ? 'Enabling save-exact is disabled by default.' : !options.enableSaveExact),
+    task: async (): Promise<void> => {
+      const path = '.npmrc' as const;
+
+      try {
+        await fs.access(path, fs.constants.F_OK | fs.constants.R_OK);
+        const contents = await fs.readFile(path, 'utf8');
+
+        if (contents.includes('save-exact=true')) {
+          debug('.npmrc file already contains save-exact=true');
+        } else {
+          await fs.appendFile(path, 'save-exact=true\n');
+          debug('.npmrc file has been updated to set save-exact=true');
+        }
+      } catch {
+        await fs.writeFile(path, 'save-exact=true\n');
+        debug('.npmrc file has been created and set save-exact=true');
+      }
     },
   },
 ];
