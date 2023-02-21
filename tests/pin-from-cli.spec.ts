@@ -52,6 +52,8 @@ describe('pin from cli', () => {
         '[SUCCESS] Output dependency versions that can be pinned...\n' +
         '[STARTED] Updating package.json...\n' +
         '[SKIPPED] Update is disabled by default.\n' +
+        '[STARTED] Enabling save-exact using .npmrc...\n' +
+        '[SKIPPED] Enabling save-exact is disabled by default.\n' +
         '[SUCCESS] Dependency versions that can be pinned:\n' +
         '[SUCCESS] \n' +
         '[SUCCESS]  fake-package-01          ^1.0.0            →  1.1.0 \n' +
@@ -103,6 +105,8 @@ describe('pin from cli', () => {
         '[SUCCESS] Output dependency versions that can be pinned...\n' +
         '[STARTED] Updating package.json...\n' +
         '[SKIPPED] Update is disabled by default.\n' +
+        '[STARTED] Enabling save-exact using .npmrc...\n' +
+        '[SKIPPED] Enabling save-exact is disabled by default.\n' +
         `[SUCCESS] All dependency versions are already pinned ${chalk.green(':)')}`,
     );
   }, 10000);
@@ -134,6 +138,8 @@ describe('pin from cli', () => {
         '[SUCCESS] Output dependency versions that can be pinned...\n' +
         '[STARTED] Updating package.json...\n' +
         '[SKIPPED] Update is disabled by default.\n' +
+        '[STARTED] Enabling save-exact using .npmrc...\n' +
+        '[SKIPPED] Enabling save-exact is disabled by default.\n' +
         `[SUCCESS] All dependency versions are already pinned ${chalk.green(':)')}`,
     );
   }, 10000);
@@ -165,6 +171,8 @@ describe('pin from cli', () => {
         '[SUCCESS] Output dependency versions that can be pinned...\n' +
         '[STARTED] Updating package.json...\n' +
         '[SKIPPED] Update is disabled by default.\n' +
+        '[STARTED] Enabling save-exact using .npmrc...\n' +
+        '[SKIPPED] Enabling save-exact is disabled by default.\n' +
         `[SUCCESS] All dependency versions are already pinned ${chalk.green(':)')}`,
     );
   }, 10000);
@@ -196,6 +204,8 @@ describe('pin from cli', () => {
         '[SUCCESS] Output dependency versions that can be pinned...\n' +
         '[STARTED] Updating package.json...\n' +
         '[SKIPPED] Update is disabled by default.\n' +
+        '[STARTED] Enabling save-exact using .npmrc...\n' +
+        '[SKIPPED] Enabling save-exact is disabled by default.\n' +
         `[SUCCESS] All dependency versions are already pinned ${chalk.green(':)')}`,
     );
   }, 10000);

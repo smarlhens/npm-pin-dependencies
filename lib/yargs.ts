@@ -7,6 +7,7 @@ export type CLIArgs = {
   update?: boolean;
   quiet?: boolean;
   verbose?: boolean;
+  enableSaveExact?: boolean;
   debug?: boolean;
   _?: Array<string | number>;
   $0?: string;
@@ -49,6 +50,11 @@ export const cli: Promise<CLIArgs> = argv
       alias: 'u',
       default: false,
       description: 'Update dependency versions in package.json file.',
+    },
+    enableSaveExact: {
+      boolean: true,
+      default: false,
+      description: 'Enable save exact.',
     },
   })
   .help('help')

@@ -99,7 +99,8 @@ Options:
                                                                    [boolean] [default: false]
   -v, --verbose  A little more detailed than the default output.   [boolean] [default: false]
   -u, --update   Update dependency versions in package.json file.  [boolean] [default: false]
-  -h, --help     Show help                                                          [boolean]
+      --enableSaveExact  Enable save exact.                        [boolean] [default: false]
+      --help     Show help                                                          [boolean]
       --version  Show version number                                                [boolean]
 
 Examples:
@@ -178,6 +179,8 @@ $ DEBUG=* npd -d
 [SUCCESS] Output dependency versions that can be pinned...
 [STARTED] Updating package.json...
 [SKIPPED] Update is disabled by default.
+[STARTED] Enabling save-exact using .npmrc...
+[SKIPPED] Enabling save-exact is disabled by default.
 [SUCCESS] Dependency versions that can be pinned:
 [SUCCESS]
 [SUCCESS]  fake-package-1           ^1.0.0            →  1.1.0
