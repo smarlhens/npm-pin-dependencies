@@ -15,5 +15,5 @@
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
   "importOrderCaseInsensitive": true,
-  "importOrder": ["<THIRD_PARTY_MODULES>", "^[./]"]
+  "importOrder": ["<THIRD_PARTY_MODULES>", "^[./]", "<TS_TYPES>^[./]"]
 }
