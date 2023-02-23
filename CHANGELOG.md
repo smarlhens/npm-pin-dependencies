@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.5.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.4.2...v0.5.0) (2023-02-23)
+
+
+### Features
+
+* add optional option to set save-exact in npmrc ([f9dcf45](https://github.com/smarlhens/npm-pin-dependencies/commit/f9dcf45244977600ea6546396c2754b72c313e43))
+
+
+### Bug Fixes
+
+* **deps:** update dependency yargs to v17.7.1 ([0da2ac8](https://github.com/smarlhens/npm-pin-dependencies/commit/0da2ac8e207811424c61b49d3dc05a4a9c3ef2fa))
+
+
+### Chores
+
+* **deps:** update dependency @swc/core to v1.3.36 ([714562d](https://github.com/smarlhens/npm-pin-dependencies/commit/714562dfdceb45f7eff0c2f52e67162944c66529))
+* **deps:** update dependency @trivago/prettier-plugin-sort-imports to v4.1.0 ([5942bae](https://github.com/smarlhens/npm-pin-dependencies/commit/5942baecd6f6a15013f8c2861b270e197ec3f652))
+* **deps:** update dependency @types/node to v18.14.1 ([5732ac8](https://github.com/smarlhens/npm-pin-dependencies/commit/5732ac8a9a093cadfe56f38f9eba89ba2f1af92a))
+
 ## [0.4.2](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.4.1...v0.4.2) (2023-02-17)
 
 
