@@ -79,7 +79,7 @@
     "@trivago/prettier-plugin-sort-imports": "4.0.0",
     "@types/cli-table": "0.3.1",
     "@types/debug": "4.1.7",
-    "@types/node": "18.14.0",
+    "@types/node": "18.14.1",
     "@types/semver": "7.3.13",
     "@types/update-notifier": "6.0.2",
     "@types/yargs": "17.0.22",
