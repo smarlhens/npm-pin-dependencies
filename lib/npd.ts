@@ -1,4 +1,5 @@
-import Ajv, { JSONSchemaType } from 'ajv';
+import lockfile, { LockFileObject } from '@yarnpkg/lockfile';
+import Ajv, { JSONSchemaType, Schema } from 'ajv';
 import chalk from 'chalk';
 import Table from 'cli-table';
 import Debug, { Debugger } from 'debug';
@@ -22,9 +23,10 @@ type Dependencies = {
 };
 
 type PackageJson = {
-  dependencies: Dependencies;
-  devDependencies: Dependencies;
-  optionalDependencies: Dependencies;
+  [key: string]: any;
+  dependencies?: Dependencies | undefined;
+  devDependencies?: Dependencies | undefined;
+  optionalDependencies?: Dependencies | undefined;
 };
 
 type LockDependency = { version: string };
@@ -47,16 +49,33 @@ type PackageLockVersion3 = {
 
 type PackageLock = PackageLockVersion1 | PackageLockVersion2 | PackageLockVersion3;
 
+type YarnLock = {
+  type: 'success' | 'merge' | 'conflict';
+  object: LockFileObject;
+};
+
 type VersionToPin = {
   dependency: string;
   version: string;
   pinnedVersion: string;
 };
 
-export type PinDependenciesInput = {
-  packageLockString: string;
-  packageJsonString: string;
+type LockFile = {
+  content: any;
+  mtime?: Date;
 };
+
+type NpmDependenciesInput = {
+  packageLockFile?: LockFile | undefined;
+};
+
+type YarnDependenciesInput = {
+  yarnLockFile?: LockFile | undefined;
+};
+
+type PinDependenciesPackage = { packageJson: PackageJson };
+
+export type PinDependenciesInput = PinDependenciesPackage & NpmDependenciesInput & YarnDependenciesInput;
 
 export type PinDependenciesOutput = {
   packageJson: PackageJson;
@@ -65,6 +84,18 @@ export type PinDependenciesOutput = {
 
 export type PinDependenciesContext = PinDependenciesInput & Partial<PinDependenciesOutput>;
 
+type PackageLockString = {
+  packageLockString: string;
+};
+
+type YarnLockString = {
+  yarnLockString: string;
+};
+
+export type PinDependenciesFromString = {
+  packageJsonString: string;
+} & (PackageLockString | YarnLockString);
+
 type Options = {
   workingDir: string;
   update: boolean;
@@ -72,12 +103,17 @@ type Options = {
   quiet: boolean;
   debug: boolean;
   packageLockPath: string;
+  yarnLockPath: string;
   packageJsonPath: string;
   enableSaveExact: boolean;
 };
 
-const packageLockFilename = 'package-lock.json' as const;
-const packageJsonFilename = 'package.json' as const;
+const packageLockFileName = 'package-lock.json' as const;
+const yarnLockFileName = 'yarn.lock' as const;
+const packageJsonFileName = 'package.json' as const;
+export const parsePackageJsonString = (raw: string): PackageJson => JSON.parse(raw);
+export const parsePackageLockString = (raw: string): PackageLock => JSON.parse(raw);
+export const parseYarnLockString = (raw: string): YarnLock => lockfile.parse(raw).object;
 const debugNamespace: string = 'npd' as const;
 const debug: Debugger = Debug(debugNamespace);
 const namespaces = () => Debug.disable();
@@ -120,8 +156,9 @@ export const pinDependenciesFromCLI = async (args: CLIArgs): Promise<PinDependen
     quiet: cliArgs.quiet || false,
     debug: cliArgs.debug || false,
     enableSaveExact: cliArgs.enableSaveExact || false,
-    packageLockPath: join(process.cwd(), packageLockFilename),
-    packageJsonPath: join(process.cwd(), packageJsonFilename),
+    packageLockPath: join(process.cwd(), packageLockFileName),
+    packageJsonPath: join(process.cwd(), packageJsonFileName),
+    yarnLockPath: join(process.cwd(), yarnLockFileName),
   };
 
   const context: ListrBaseClassOptions<PinDependenciesContext, ListrRendererValue> = {
@@ -142,6 +179,7 @@ export const pinDependenciesFromCLI = async (args: CLIArgs): Promise<PinDependen
 // @ts-ignore https://github.com/ajv-validator/ajv/issues/2132
 const ajv = new Ajv();
 
+// @ts-ignore
 const packageJsonSchema: JSONSchemaType<PackageJson> = {
   type: 'object',
   properties: {
@@ -150,24 +188,20 @@ const packageJsonSchema: JSONSchemaType<PackageJson> = {
       additionalProperties: {
         type: 'string',
       },
-      required: [],
     },
     devDependencies: {
       type: 'object',
       additionalProperties: {
         type: 'string',
       },
-      required: [],
     },
     optionalDependencies: {
       type: 'object',
       additionalProperties: {
         type: 'string',
       },
-      required: [],
     },
   },
-  required: [],
 };
 
 // @ts-ignore
@@ -217,6 +251,22 @@ const packageLockSchema: JSONSchemaType<PackageLock> = {
       not: { required: ['dependencies'] },
     },
   ],
+};
+
+// @ts-ignore
+const yarnLockSchema: JSONSchemaType<YarnLock> = {
+  type: 'object',
+  patternProperties: {
+    '^[^@]+@[^@]+$': {
+      type: 'object',
+      properties: {
+        version: {
+          type: 'string',
+        },
+      },
+      required: ['version'],
+    },
+  },
 };
 
 const createOutputTable = (colWidths: number[]): Table => {
@@ -270,29 +320,128 @@ const generateUpdateCommandFromContext = (options: Options): string => {
   return argv.join(' ');
 };
 
-export const validatePackageLock = (ctx: Pick<PinDependenciesInput, 'packageLockString'>): boolean => {
-  const packageLockValidator = ajv.compile(packageLockSchema);
-  const isValid = packageLockValidator(JSON.parse(ctx.packageLockString));
+export const validateObj = ({ schema, obj, fileName }: { schema: Schema; obj: any; fileName: string }): boolean => {
+  const validator = ajv.compile(schema);
+  const isValid = validator(obj);
   if (!isValid) {
-    throw new Error(`Invalid package-lock.json: ${ajv.errorsText(packageLockValidator.errors)}`);
+    throw new Error(`Invalid ${fileName}: ${ajv.errorsText(validator.errors)}`);
   }
 
   return isValid;
 };
 
-export const validatePackageJson = (ctx: Pick<PinDependenciesInput, 'packageJsonString'>): boolean => {
-  const packageJsonValidator = ajv.compile(packageJsonSchema);
-  const isValid = packageJsonValidator(JSON.parse(ctx.packageJsonString));
-  if (!isValid) {
-    throw new Error(`Invalid package.json: ${ajv.errorsText(packageJsonValidator.errors)}`);
-  }
+export const validatePackageLockString = (ctx: PackageLockString): boolean =>
+  validatePackageLock({
+    packageLockFile: {
+      content: parsePackageLockString(ctx.packageLockString),
+    },
+  });
 
-  return isValid;
+export const validatePackageLock = (ctx: Pick<NpmDependenciesInput, 'packageLockFile'>): boolean =>
+  validateObj({
+    fileName: packageLockFileName,
+    obj: ctx.packageLockFile!.content,
+    schema: packageLockSchema,
+  });
+
+export const validateYarnLockString = (ctx: YarnLockString): boolean =>
+  validateYarnLock({
+    yarnLockFile: {
+      content: parseYarnLockString(ctx.yarnLockString),
+    },
+  });
+
+export const validateYarnLock = (ctx: Pick<YarnDependenciesInput, 'yarnLockFile'>): boolean =>
+  validateObj({
+    fileName: yarnLockFileName,
+    obj: ctx.yarnLockFile!.content,
+    schema: yarnLockSchema,
+  });
+
+export const validatePackageJsonString = (ctx: Pick<PinDependenciesFromString, 'packageJsonString'>): boolean =>
+  validatePackageJson({
+    packageJson: parsePackageJsonString(ctx.packageJsonString),
+  });
+
+export const validatePackageJson = (ctx: Pick<PinDependenciesInput, 'packageJson'>): boolean =>
+  validateObj({
+    fileName: packageJsonFileName,
+    obj: ctx.packageJson,
+    schema: packageJsonSchema,
+  });
+
+type ResolveDependencyKey = ({ name, version }: { name: string; version: string }) => string;
+type DependencyVersionResolver = {
+  lockedDependencies: LockDependencies;
+  resolveDependencyKey: ResolveDependencyKey;
 };
 
-export const pinDependenciesFromString = (ctx: PinDependenciesInput): PinDependenciesOutput => {
-  const packageLock: PackageLock = JSON.parse(ctx.packageLockString);
-  let packageJson: PackageJson = JSON.parse(ctx.packageJsonString);
+const npmResolver = ({ packageLockFile }: NpmDependenciesInput): DependencyVersionResolver => {
+  const packageLock: PackageLock = packageLockFile!.content;
+  const resolvePackage: ResolveDependencyKey = ({ name }) => `node_modules/${name}`;
+  const resolveDependency: ResolveDependencyKey = ({ name }) => name;
+
+  if (packageLock.lockfileVersion === 1) {
+    return {
+      lockedDependencies: packageLock.dependencies,
+      resolveDependencyKey: resolveDependency,
+    };
+  } else if (packageLock.lockfileVersion === 2) {
+    return packageLock.packages
+      ? {
+          lockedDependencies: packageLock.packages,
+          resolveDependencyKey: resolvePackage,
+        }
+      : {
+          lockedDependencies: packageLock.dependencies,
+          resolveDependencyKey: resolveDependency,
+        };
+  } else if (packageLock.lockfileVersion === 3) {
+    return {
+      lockedDependencies: packageLock.packages,
+      resolveDependencyKey: resolvePackage,
+    };
+  } else {
+    throw new Error(`Lock file version not yet supported.`);
+  }
+};
+
+const yarnResolver = ({ yarnLockFile }: YarnDependenciesInput): DependencyVersionResolver => {
+  return {
+    lockedDependencies: yarnLockFile!.content,
+    resolveDependencyKey: ({ name, version }) => `${name}@${version}`,
+  };
+};
+
+export const pinDependencies = (ctx: PinDependenciesInput): PinDependenciesOutput => {
+  let resolver: DependencyVersionResolver;
+  const isLockFileDefined = (lockFile: LockFile | undefined): lockFile is LockFile =>
+    typeof lockFile !== 'undefined' && lockFile !== undefined;
+
+  if (
+    isLockFileDefined(ctx.packageLockFile) &&
+    typeof ctx.packageLockFile.mtime === 'undefined' &&
+    isLockFileDefined(ctx.yarnLockFile) &&
+    typeof ctx.yarnLockFile.mtime === 'undefined'
+  ) {
+    throw new Error(`Unable to decide which lock file to use.`);
+  } else if (
+    isLockFileDefined(ctx.packageLockFile) &&
+    typeof ctx.packageLockFile.mtime !== 'undefined' &&
+    isLockFileDefined(ctx.yarnLockFile) &&
+    typeof ctx.yarnLockFile.mtime !== 'undefined'
+  ) {
+    resolver =
+      ctx.packageLockFile.mtime.getTime() > ctx.yarnLockFile.mtime.getTime() ? npmResolver(ctx) : yarnResolver(ctx);
+  } else if (isLockFileDefined(ctx.packageLockFile)) {
+    resolver = npmResolver(ctx);
+  } else if (isLockFileDefined(ctx.yarnLockFile)) {
+    resolver = yarnResolver(ctx);
+  } else {
+    throw new Error(`Lock file is missing.`);
+  }
+
+  let packageJson: PackageJson = ctx.packageJson;
   const versionsToPin: VersionToPin[] = [];
   const dependencyTypes: (keyof PackageJson)[] = ['dependencies', 'devDependencies', 'optionalDependencies'];
   for (const dependencyType of dependencyTypes) {
@@ -301,30 +450,14 @@ export const pinDependenciesFromString = (ctx: PinDependenciesInput): PinDepende
     }
 
     for (const dependencyName of Object.keys(packageJson[dependencyType])) {
-      let dependencyParent: LockDependencies | undefined;
-
-      if (packageLock.lockfileVersion === 1) {
-        dependencyParent = packageLock.dependencies;
-      } else if (packageLock.lockfileVersion === 2) {
-        dependencyParent = packageLock.packages ? packageLock.packages : packageLock.dependencies;
-      } else if (packageLock.lockfileVersion === 3) {
-        dependencyParent = packageLock.packages;
-      } else {
-        throw new Error(`Lock file version not yet supported.`);
-      }
-
-      let dependencyKey: string = dependencyName;
-      if ('packages' in packageLock) {
-        dependencyKey = `node_modules/${dependencyName}`;
-      }
-
-      let packageLockDependency: LockDependency | undefined = dependencyParent[dependencyKey];
+      const userDefinedVersion = packageJson[dependencyType][dependencyName];
+      let dependencyKey: string = resolver.resolveDependencyKey({
+        name: dependencyName,
+        version: userDefinedVersion,
+      });
+      let packageLockDependency: LockDependency | undefined = resolver.lockedDependencies[dependencyKey];
       if (!packageLockDependency) {
-        debug(
-          `Dependency ${chalk.white(dependencyKey)} is undefined in ${chalk.cyan(
-            'packages' in packageLock ? 'packages' : 'dependencies',
-          )}.`,
-        );
+        debug(`Dependency ${chalk.white(dependencyKey)} is undefined in ${chalk.cyan('dependencies')}.`);
         continue;
       }
 
@@ -334,16 +467,15 @@ export const pinDependenciesFromString = (ctx: PinDependenciesInput): PinDepende
       }
 
       const installedVersion = packageLockDependency.version;
-      const requiredVersion = packageJson[dependencyType][dependencyName];
-      if (!semver.clean(requiredVersion, { loose: true })) {
+      if (!semver.clean(userDefinedVersion, { loose: true })) {
         debug(
           `Dependency ${chalk.white(dependencyName)} version is not pinned: ${chalk.red(
-            requiredVersion,
+            userDefinedVersion,
           )} -> ${chalk.green(installedVersion)}.`,
         );
         versionsToPin.push({
           dependency: dependencyName,
-          version: requiredVersion,
+          version: userDefinedVersion,
           pinnedVersion: installedVersion,
         });
         packageJson[dependencyType][dependencyName] = installedVersion;
@@ -359,6 +491,48 @@ export const pinDependenciesFromString = (ctx: PinDependenciesInput): PinDepende
   };
 };
 
+export const pinDependenciesFromString = (ctx: PinDependenciesFromString): PinDependenciesOutput => {
+  if ('packageLockString' in ctx) {
+    return pinDependencies({
+      packageJson: parsePackageJsonString(ctx.packageJsonString),
+      packageLockFile: {
+        content: parsePackageLockString(ctx.packageLockString),
+      },
+      yarnLockFile: undefined,
+    });
+  } else {
+    return pinDependencies({
+      packageJson: JSON.parse(ctx.packageJsonString),
+      packageLockFile: undefined,
+      yarnLockFile: {
+        content: parseYarnLockString(ctx.yarnLockString),
+      },
+    });
+  }
+};
+
+const readLockFile = async ({
+  lockPath,
+  parse,
+  lockFileName,
+}: {
+  lockFileName: string;
+  lockPath: string;
+  parse: (raw: string) => any;
+}): Promise<LockFile | undefined> => {
+  try {
+    const packageLock: Partial<LockFile> = {};
+    [packageLock.content, packageLock.mtime] = await Promise.all([
+      fs.readFile(lockPath, 'utf8').then(raw => parse(raw)),
+      fs.stat(lockPath).then(payload => payload.mtime),
+    ]);
+    return packageLock as LockFile;
+  } catch (_) {
+    debug(`${lockFileName} not found.`);
+    return undefined;
+  }
+};
+
 const pinDependenciesTasks = ({
   options,
   parent,
@@ -369,19 +543,41 @@ const pinDependenciesTasks = ({
   {
     title: 'Reading package-lock.json...',
     task: async (ctx: PinDependenciesContext) => {
-      ctx.packageLockString = await fs.readFile(options.packageLockPath, 'utf8');
+      ctx.packageLockFile = await readLockFile({
+        lockPath: options.packageLockPath,
+        parse: parsePackageLockString,
+        lockFileName: packageLockFileName,
+      });
+    },
+  },
+  {
+    title: 'Reading yarn.lock...',
+    task: async (ctx: PinDependenciesContext) => {
+      ctx.yarnLockFile = await readLockFile({
+        lockPath: options.yarnLockPath,
+        parse: parseYarnLockString,
+        lockFileName: yarnLockFileName,
+      });
     },
   },
   {
     title: 'Reading package.json...',
     task: async (ctx: PinDependenciesContext) => {
-      ctx.packageJsonString = await fs.readFile(options.packageJsonPath, 'utf8');
+      ctx.packageJson = await fs.readFile(options.packageJsonPath, 'utf8').then<PackageJson>(raw => JSON.parse(raw));
     },
   },
   {
     title: 'Validating package-lock.json...',
+    skip: ctx => typeof ctx.packageLockFile === 'undefined',
     task: (ctx: PinDependenciesContext) => {
       validatePackageLock(ctx);
+    },
+  },
+  {
+    title: 'Validating yarn.lock...',
+    skip: ctx => typeof ctx.yarnLockFile === 'undefined',
+    task: (ctx: PinDependenciesContext) => {
+      validateYarnLock(ctx);
     },
   },
   {
@@ -393,7 +589,7 @@ const pinDependenciesTasks = ({
   {
     title: 'Computing which dependency versions are to pin...',
     task: (ctx: PinDependenciesContext) => {
-      Object.assign(ctx, pinDependenciesFromString(ctx));
+      Object.assign(ctx, pinDependencies(ctx));
     },
   },
   {

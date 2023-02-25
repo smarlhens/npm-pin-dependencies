@@ -5,6 +5,7 @@
   "keywords": [
     "node",
     "npm",
+    "yarn",
     "dependency",
     "dependencies",
     "version",
@@ -62,6 +63,7 @@
     "test:watch": "vitest watch"
   },
   "dependencies": {
+    "@yarnpkg/lockfile": "1.1.0",
     "ajv": "8.12.0",
     "chalk": "5.2.0",
     "cli-table": "0.3.11",
@@ -83,6 +85,7 @@
     "@types/semver": "7.3.13",
     "@types/update-notifier": "6.0.2",
     "@types/yargs": "17.0.22",
+    "@types/yarnpkg__lockfile": "1.1.5",
     "@vitest/coverage-c8": "0.28.5",
     "execa": "7.0.0",
     "husky": "8.0.3",

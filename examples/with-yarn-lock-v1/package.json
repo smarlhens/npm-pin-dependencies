@@ -1,0 +1,9 @@
+{
+  "name": "fake",
+  "private": true,
+  "dependencies": {
+    "fake-package-1": "^1.0.0",
+    "fake-package-2": "^2.0.0",
+    "fake-package-3": "^3.0.0"
+  }
+}
