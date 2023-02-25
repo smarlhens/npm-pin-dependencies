@@ -7,6 +7,9 @@ export default defineConfig({
     clearMocks: true,
     restoreMocks: true,
     mockReset: true,
+    deps: {
+      inline: ['@yarnpkg/lockfile'],
+    },
     coverage: {
       provider: 'c8',
       clean: true,
