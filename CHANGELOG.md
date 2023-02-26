@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.5.0...v0.6.0) (2023-02-26)
+
+
+### Features
+
+* add yarn lock file v1 support ([4de4751](https://github.com/smarlhens/npm-pin-dependencies/commit/4de4751eab7e4a65134d8f16e80c49805f44f64b))
+* run in parallel reading & validating tasks ([c19d2d3](https://github.com/smarlhens/npm-pin-dependencies/commit/c19d2d32b94284ff687f4b14f1c6141cc701fa96))
+
+
+### Chores
+
+* **deps:** update dependency @trivago/prettier-plugin-sort-imports to v4.1.1 ([a31bfc6](https://github.com/smarlhens/npm-pin-dependencies/commit/a31bfc692ec0a133f3effde88585a5751f66484f))
+* **deps:** update vitest monorepo to v0.29.1 ([58c4824](https://github.com/smarlhens/npm-pin-dependencies/commit/58c482419fcffd158cd823876b47613c9e88291a))
+
 ## [0.5.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.4.2...v0.5.0) (2023-02-23)
 
 
