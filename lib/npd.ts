@@ -3,14 +3,7 @@ import Ajv, { JSONSchemaType, Schema } from 'ajv';
 import chalk from 'chalk';
 import Table from 'cli-table';
 import Debug, { Debugger } from 'debug';
-import {
-  Listr,
-  ListrBaseClassOptions,
-  ListrGetRendererOptions,
-  ListrRenderer,
-  ListrTask,
-  ListrTaskWrapper,
-} from 'listr2';
+import { Listr, ListrBaseClassOptions, ListrGetRendererOptions, ListrRenderer, ListrTaskWrapper } from 'listr2';
 import type { ListrDefaultRendererOptions, ListrRendererValue } from 'listr2';
 import fs from 'node:fs/promises';
 import { join, normalize } from 'node:path';
@@ -533,131 +526,170 @@ const readLockFile = async ({
   }
 };
 
-const pinDependenciesTasks = ({
+const pinDependenciesReadFileTasks = ({
   options,
-  parent,
+  task,
 }: {
   options: Options;
-  parent: Omit<ListrTaskWrapper<PinDependenciesContext, typeof ListrRenderer>, 'skip' | 'enabled'>;
-}): ListrTask<PinDependenciesContext>[] => [
-  {
-    title: 'Reading package-lock.json...',
-    task: async (ctx: PinDependenciesContext) => {
-      ctx.packageLockFile = await readLockFile({
-        lockPath: options.packageLockPath,
-        parse: parsePackageLockString,
-        lockFileName: packageLockFileName,
-      });
+  task: ListrTaskWrapper<PinDependenciesContext, typeof ListrRenderer>;
+}): Listr<PinDependenciesContext, ListrRendererValue, ListrRendererValue> =>
+  task.newListr(
+    [
+      {
+        title: 'Reading package-lock.json...',
+        task: async (ctx: PinDependenciesContext) => {
+          ctx.packageLockFile = await readLockFile({
+            lockPath: options.packageLockPath,
+            parse: parsePackageLockString,
+            lockFileName: packageLockFileName,
+          });
+        },
+      },
+      {
+        title: 'Reading yarn.lock...',
+        task: async (ctx: PinDependenciesContext) => {
+          ctx.yarnLockFile = await readLockFile({
+            lockPath: options.yarnLockPath,
+            parse: parseYarnLockString,
+            lockFileName: yarnLockFileName,
+          });
+        },
+      },
+      {
+        title: 'Reading package.json...',
+        task: async (ctx: PinDependenciesContext) => {
+          ctx.packageJson = await fs
+            .readFile(options.packageJsonPath, 'utf8')
+            .then<PackageJson>(raw => JSON.parse(raw));
+        },
+      },
+    ],
+    {
+      concurrent: true,
     },
-  },
-  {
-    title: 'Reading yarn.lock...',
-    task: async (ctx: PinDependenciesContext) => {
-      ctx.yarnLockFile = await readLockFile({
-        lockPath: options.yarnLockPath,
-        parse: parseYarnLockString,
-        lockFileName: yarnLockFileName,
-      });
-    },
-  },
-  {
-    title: 'Reading package.json...',
-    task: async (ctx: PinDependenciesContext) => {
-      ctx.packageJson = await fs.readFile(options.packageJsonPath, 'utf8').then<PackageJson>(raw => JSON.parse(raw));
-    },
-  },
-  {
-    title: 'Validating package-lock.json...',
-    skip: ctx => typeof ctx.packageLockFile === 'undefined',
-    task: (ctx: PinDependenciesContext) => {
-      validatePackageLock(ctx);
-    },
-  },
-  {
-    title: 'Validating yarn.lock...',
-    skip: ctx => typeof ctx.yarnLockFile === 'undefined',
-    task: (ctx: PinDependenciesContext) => {
-      validateYarnLock(ctx);
-    },
-  },
-  {
-    title: 'Validating package.json...',
-    task: (ctx: PinDependenciesContext) => {
-      validatePackageJson(ctx);
-    },
-  },
-  {
-    title: 'Computing which dependency versions are to pin...',
-    task: (ctx: PinDependenciesContext) => {
-      Object.assign(ctx, pinDependencies(ctx));
-    },
-  },
-  {
-    title: 'Output dependency versions that can be pinned...',
-    task: (ctx: PinDependenciesContext) => {
-      const versionsToPin = ctx.versionsToPin!;
-      const arrowSeparator: string = '→';
-      let colWidths: [number, number, number, number] = [2, 2, 2, 2];
-      let colValues: [string, string, string, string][] = [];
+  );
 
-      for (const { pinnedVersion, version, dependency } of versionsToPin) {
-        colWidths = [
-          Math.max(colWidths[0], dependency.length + 2),
-          Math.max(colWidths[1], version.length + 2),
-          arrowSeparator.length + 2,
-          Math.max(colWidths[3], pinnedVersion.length + 2),
-        ];
-        colValues.push([dependency, version, arrowSeparator, pinnedVersion]);
-      }
+const pinDependenciesValidateTasks = ({
+  task,
+}: {
+  task: ListrTaskWrapper<PinDependenciesContext, typeof ListrRenderer>;
+}): Listr<PinDependenciesContext, ListrRendererValue, ListrRendererValue> =>
+  task.newListr(
+    [
+      {
+        title: 'Validating package-lock.json...',
+        skip: ctx => typeof ctx.packageLockFile === 'undefined',
+        task: (ctx: PinDependenciesContext) => {
+          validatePackageLock(ctx);
+        },
+      },
+      {
+        title: 'Validating yarn.lock...',
+        skip: ctx => typeof ctx.yarnLockFile === 'undefined',
+        task: (ctx: PinDependenciesContext) => {
+          validateYarnLock(ctx);
+        },
+      },
+      {
+        title: 'Validating package.json...',
+        task: (ctx: PinDependenciesContext) => {
+          validatePackageJson(ctx);
+        },
+      },
+    ],
+    {
+      concurrent: true,
+    },
+  );
 
-      if (0 === versionsToPin.length) {
-        parent.title = `All dependency versions are already pinned ${chalk.green(':)')}`;
-      } else {
-        const table: Table = createOutputTable(colWidths);
-        table.push(...colValues);
+const pinDependenciesTasks = ({
+  options,
+  task,
+}: {
+  options: Options;
+  task: ListrTaskWrapper<PinDependenciesContext, typeof ListrRenderer>;
+}): Listr<PinDependenciesContext, ListrRendererValue, ListrRendererValue> =>
+  task.newListr([
+    {
+      title: 'Reading...',
+      task: (_, task) => pinDependenciesReadFileTasks({ options, task }),
+    },
+    {
+      title: 'Validating...',
+      task: (_, task) => pinDependenciesValidateTasks({ task }),
+    },
+    {
+      title: 'Computing which dependency versions are to pin...',
+      task: (ctx: PinDependenciesContext) => {
+        Object.assign(ctx, pinDependencies(ctx));
+      },
+    },
+    {
+      title: 'Output dependency versions that can be pinned...',
+      task: (ctx: PinDependenciesContext) => {
+        const versionsToPin = ctx.versionsToPin!;
+        const arrowSeparator: string = '→';
+        let colWidths: [number, number, number, number] = [2, 2, 2, 2];
+        let colValues: [string, string, string, string][] = [];
 
-        let title = `${
-          options.update ? 'Dependency versions pinned' : 'Dependency versions that can be pinned'
-        }:\n\n${table.toString()}`;
-
-        if (!options.update) {
-          title += `\n\nRun ${chalk.cyan(generateUpdateCommandFromContext(options))} to upgrade package.json.`;
+        for (const { pinnedVersion, version, dependency } of versionsToPin) {
+          colWidths = [
+            Math.max(colWidths[0], dependency.length + 2),
+            Math.max(colWidths[1], version.length + 2),
+            arrowSeparator.length + 2,
+            Math.max(colWidths[3], pinnedVersion.length + 2),
+          ];
+          colValues.push([dependency, version, arrowSeparator, pinnedVersion]);
         }
 
-        parent.title = title;
-      }
-    },
-  },
-  {
-    title: 'Updating package.json...',
-    skip: () => (!options.update ? 'Update is disabled by default.' : !options.update),
-    task: (ctx: PinDependenciesContext) => {
-      return fs.writeFile(options.packageJsonPath, JSON.stringify(ctx.packageJson, null, 2) + '\n');
-    },
-  },
-  {
-    title: 'Enabling save-exact using .npmrc...',
-    skip: () => (!options.enableSaveExact ? 'Enabling save-exact is disabled by default.' : !options.enableSaveExact),
-    task: async (): Promise<void> => {
-      const path = '.npmrc' as const;
-
-      try {
-        await fs.access(path, fs.constants.F_OK | fs.constants.R_OK);
-        const contents = await fs.readFile(path, 'utf8');
-
-        if (contents.includes('save-exact=true')) {
-          debug('.npmrc file already contains save-exact=true');
+        if (0 === versionsToPin.length) {
+          task.title = `All dependency versions are already pinned ${chalk.green(':)')}`;
         } else {
-          await fs.appendFile(path, 'save-exact=true\n');
-          debug('.npmrc file has been updated to set save-exact=true');
+          const table: Table = createOutputTable(colWidths);
+          table.push(...colValues);
+
+          let title = `${
+            options.update ? 'Dependency versions pinned' : 'Dependency versions that can be pinned'
+          }:\n\n${table.toString()}`;
+
+          if (!options.update) {
+            title += `\n\nRun ${chalk.cyan(generateUpdateCommandFromContext(options))} to upgrade package.json.`;
+          }
+
+          task.title = title;
         }
-      } catch {
-        await fs.writeFile(path, 'save-exact=true\n');
-        debug('.npmrc file has been created and set save-exact=true');
-      }
+      },
     },
-  },
-];
+    {
+      title: 'Updating package.json...',
+      skip: () => (!options.update ? 'Update is disabled by default.' : !options.update),
+      task: (ctx: PinDependenciesContext) => {
+        return fs.writeFile(options.packageJsonPath, JSON.stringify(ctx.packageJson, null, 2) + '\n');
+      },
+    },
+    {
+      title: 'Enabling save-exact using .npmrc...',
+      skip: () => (!options.enableSaveExact ? 'Enabling save-exact is disabled by default.' : !options.enableSaveExact),
+      task: async (): Promise<void> => {
+        const path = '.npmrc' as const;
+
+        try {
+          await fs.access(path, fs.constants.F_OK | fs.constants.R_OK);
+          const contents = await fs.readFile(path, 'utf8');
+
+          if (contents.includes('save-exact=true')) {
+            debug('.npmrc file already contains save-exact=true');
+          } else {
+            await fs.appendFile(path, 'save-exact=true\n');
+            debug('.npmrc file has been updated to set save-exact=true');
+          }
+        } catch {
+          await fs.writeFile(path, 'save-exact=true\n');
+          debug('.npmrc file has been created and set save-exact=true');
+        }
+      },
+    },
+  ]);
 
 const pinDependenciesCommand = ({
   options,
@@ -670,7 +702,7 @@ const pinDependenciesCommand = ({
     [
       {
         title: `Pinning dependency versions in package.json file...`,
-        task: (_, task) => task.newListr(parent => pinDependenciesTasks({ parent, options })),
+        task: (_, task) => pinDependenciesTasks({ task, options }),
       },
     ],
     context,
