@@ -17,18 +17,22 @@ describe('pin from cli', () => {
     );
     expect(stdout).toEqual(
       '[STARTED] Pinning dependency versions in package.json file...\n' +
+        '[STARTED] Reading...\n' +
         '[STARTED] Reading package-lock.json...\n' +
-        '[SUCCESS] Reading package-lock.json...\n' +
         '[STARTED] Reading yarn.lock...\n' +
-        '[SUCCESS] Reading yarn.lock...\n' +
         '[STARTED] Reading package.json...\n' +
+        '[SUCCESS] Reading yarn.lock...\n' +
+        '[SUCCESS] Reading package-lock.json...\n' +
         '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading...\n' +
+        '[STARTED] Validating...\n' +
         '[STARTED] Validating package-lock.json...\n' +
-        '[SUCCESS] Validating package-lock.json...\n' +
         '[STARTED] Validating yarn.lock...\n' +
-        '[SKIPPED] Validating yarn.lock...\n' +
         '[STARTED] Validating package.json...\n' +
+        '[SKIPPED] Validating yarn.lock...\n' +
+        '[SUCCESS] Validating package-lock.json...\n' +
         '[SUCCESS] Validating package.json...\n' +
+        '[SUCCESS] Validating...\n' +
         '[STARTED] Computing which dependency versions are to pin...\n' +
         '[SUCCESS] Computing which dependency versions are to pin...\n' +
         '[STARTED] Output dependency versions that can be pinned...\n' +
@@ -94,18 +98,22 @@ describe('pin from cli', () => {
     );
     expect(stdout).toEqual(
       '[STARTED] Pinning dependency versions in package.json file...\n' +
+        '[STARTED] Reading...\n' +
         '[STARTED] Reading package-lock.json...\n' +
-        '[SUCCESS] Reading package-lock.json...\n' +
         '[STARTED] Reading yarn.lock...\n' +
-        '[SUCCESS] Reading yarn.lock...\n' +
         '[STARTED] Reading package.json...\n' +
+        '[SUCCESS] Reading yarn.lock...\n' +
+        '[SUCCESS] Reading package-lock.json...\n' +
         '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading...\n' +
+        '[STARTED] Validating...\n' +
         '[STARTED] Validating package-lock.json...\n' +
-        '[SUCCESS] Validating package-lock.json...\n' +
         '[STARTED] Validating yarn.lock...\n' +
-        '[SKIPPED] Validating yarn.lock...\n' +
         '[STARTED] Validating package.json...\n' +
+        '[SKIPPED] Validating yarn.lock...\n' +
+        '[SUCCESS] Validating package-lock.json...\n' +
         '[SUCCESS] Validating package.json...\n' +
+        '[SUCCESS] Validating...\n' +
         '[STARTED] Computing which dependency versions are to pin...\n' +
         '[SUCCESS] Computing which dependency versions are to pin...\n' +
         '[STARTED] Output dependency versions that can be pinned...\n' +
@@ -131,18 +139,22 @@ describe('pin from cli', () => {
     );
     expect(stdout).toEqual(
       '[STARTED] Pinning dependency versions in package.json file...\n' +
+        '[STARTED] Reading...\n' +
         '[STARTED] Reading package-lock.json...\n' +
-        '[SUCCESS] Reading package-lock.json...\n' +
         '[STARTED] Reading yarn.lock...\n' +
-        '[SUCCESS] Reading yarn.lock...\n' +
         '[STARTED] Reading package.json...\n' +
+        '[SUCCESS] Reading yarn.lock...\n' +
+        '[SUCCESS] Reading package-lock.json...\n' +
         '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading...\n' +
+        '[STARTED] Validating...\n' +
         '[STARTED] Validating package-lock.json...\n' +
-        '[SUCCESS] Validating package-lock.json...\n' +
         '[STARTED] Validating yarn.lock...\n' +
-        '[SKIPPED] Validating yarn.lock...\n' +
         '[STARTED] Validating package.json...\n' +
+        '[SKIPPED] Validating yarn.lock...\n' +
+        '[SUCCESS] Validating package-lock.json...\n' +
         '[SUCCESS] Validating package.json...\n' +
+        '[SUCCESS] Validating...\n' +
         '[STARTED] Computing which dependency versions are to pin...\n' +
         '[SUCCESS] Computing which dependency versions are to pin...\n' +
         '[STARTED] Output dependency versions that can be pinned...\n' +
@@ -168,18 +180,22 @@ describe('pin from cli', () => {
     );
     expect(stdout).toEqual(
       '[STARTED] Pinning dependency versions in package.json file...\n' +
+        '[STARTED] Reading...\n' +
         '[STARTED] Reading package-lock.json...\n' +
-        '[SUCCESS] Reading package-lock.json...\n' +
         '[STARTED] Reading yarn.lock...\n' +
-        '[SUCCESS] Reading yarn.lock...\n' +
         '[STARTED] Reading package.json...\n' +
+        '[SUCCESS] Reading yarn.lock...\n' +
+        '[SUCCESS] Reading package-lock.json...\n' +
         '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading...\n' +
+        '[STARTED] Validating...\n' +
         '[STARTED] Validating package-lock.json...\n' +
-        '[SUCCESS] Validating package-lock.json...\n' +
         '[STARTED] Validating yarn.lock...\n' +
-        '[SKIPPED] Validating yarn.lock...\n' +
         '[STARTED] Validating package.json...\n' +
+        '[SKIPPED] Validating yarn.lock...\n' +
+        '[SUCCESS] Validating package-lock.json...\n' +
         '[SUCCESS] Validating package.json...\n' +
+        '[SUCCESS] Validating...\n' +
         '[STARTED] Computing which dependency versions are to pin...\n' +
         '[SUCCESS] Computing which dependency versions are to pin...\n' +
         '[STARTED] Output dependency versions that can be pinned...\n' +
@@ -205,18 +221,22 @@ describe('pin from cli', () => {
     );
     expect(stdout).toEqual(
       '[STARTED] Pinning dependency versions in package.json file...\n' +
+        '[STARTED] Reading...\n' +
         '[STARTED] Reading package-lock.json...\n' +
-        '[SUCCESS] Reading package-lock.json...\n' +
         '[STARTED] Reading yarn.lock...\n' +
-        '[SUCCESS] Reading yarn.lock...\n' +
         '[STARTED] Reading package.json...\n' +
+        '[SUCCESS] Reading yarn.lock...\n' +
+        '[SUCCESS] Reading package-lock.json...\n' +
         '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading...\n' +
+        '[STARTED] Validating...\n' +
         '[STARTED] Validating package-lock.json...\n' +
-        '[SUCCESS] Validating package-lock.json...\n' +
         '[STARTED] Validating yarn.lock...\n' +
-        '[SKIPPED] Validating yarn.lock...\n' +
         '[STARTED] Validating package.json...\n' +
+        '[SKIPPED] Validating yarn.lock...\n' +
+        '[SUCCESS] Validating package-lock.json...\n' +
         '[SUCCESS] Validating package.json...\n' +
+        '[SUCCESS] Validating...\n' +
         '[STARTED] Computing which dependency versions are to pin...\n' +
         '[SUCCESS] Computing which dependency versions are to pin...\n' +
         '[STARTED] Output dependency versions that can be pinned...\n' +
@@ -243,18 +263,22 @@ describe('pin from cli', () => {
     );
     expect(stdout).toEqual(
       '[STARTED] Pinning dependency versions in package.json file...\n' +
+        '[STARTED] Reading...\n' +
         '[STARTED] Reading package-lock.json...\n' +
-        '[SUCCESS] Reading package-lock.json...\n' +
         '[STARTED] Reading yarn.lock...\n' +
-        '[SUCCESS] Reading yarn.lock...\n' +
         '[STARTED] Reading package.json...\n' +
+        '[SUCCESS] Reading package-lock.json...\n' +
+        '[SUCCESS] Reading yarn.lock...\n' +
         '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading...\n' +
+        '[STARTED] Validating...\n' +
         '[STARTED] Validating package-lock.json...\n' +
-        '[SKIPPED] Validating package-lock.json...\n' +
         '[STARTED] Validating yarn.lock...\n' +
-        '[SUCCESS] Validating yarn.lock...\n' +
         '[STARTED] Validating package.json...\n' +
+        '[SKIPPED] Validating package-lock.json...\n' +
+        '[SUCCESS] Validating yarn.lock...\n' +
         '[SUCCESS] Validating package.json...\n' +
+        '[SUCCESS] Validating...\n' +
         '[STARTED] Computing which dependency versions are to pin...\n' +
         '[SUCCESS] Computing which dependency versions are to pin...\n' +
         '[STARTED] Output dependency versions that can be pinned...\n' +
