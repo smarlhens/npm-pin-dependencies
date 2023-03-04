@@ -460,7 +460,7 @@ export const pinDependencies = (ctx: PinDependenciesInput): PinDependenciesOutpu
       }
 
       const installedVersion = packageLockDependency.version;
-      if (!semver.clean(userDefinedVersion, { loose: true })) {
+      if (!semver.clean(userDefinedVersion, { loose: true }) && installedVersion !== userDefinedVersion) {
         debug(
           `Dependency ${chalk.white(dependencyName)} version is not pinned: ${chalk.red(
             userDefinedVersion,
