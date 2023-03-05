@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.7.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.6.0...v0.7.0) (2023-03-05)
+
+
+### Features
+
+* check if installed version neq user defined version ([06fbe24](https://github.com/smarlhens/npm-pin-dependencies/commit/06fbe244c049b6eb2944cda4c6db23cfeed191ed))
+
+
+### Chores
+
+* **deps:** update dependency @swc/core to v1.3.37 ([b997ad9](https://github.com/smarlhens/npm-pin-dependencies/commit/b997ad93afc3f9528bdf9bdd35f7a96e33c33240))
+* **deps:** update dependency @types/node to v18.14.2 ([7702f6f](https://github.com/smarlhens/npm-pin-dependencies/commit/7702f6f05cc94074cc07d7f02c20c2d5b84d13ec))
+* **deps:** update dependency @types/node to v18.14.5 ([e94f626](https://github.com/smarlhens/npm-pin-dependencies/commit/e94f62688895317b245e82c44acd03b829c4fd00))
+* **deps:** update dependency @types/node to v18.14.6 ([d8b6ade](https://github.com/smarlhens/npm-pin-dependencies/commit/d8b6adeaf60d39b1b1142372460a843ab1788076))
+* **deps:** update dependency rimraf to v4.2.0 ([ce2071b](https://github.com/smarlhens/npm-pin-dependencies/commit/ce2071ba1646e92ca752b4c348cf60b8b180c0e4))
+* **deps:** update dependency rimraf to v4.3.0 ([fe64c74](https://github.com/smarlhens/npm-pin-dependencies/commit/fe64c74b4155b0847ede90ab35f6f97536f7a83d))
+* **deps:** update vitest monorepo to v0.29.2 ([89a26cc](https://github.com/smarlhens/npm-pin-dependencies/commit/89a26cc4a4acd547ec7970df3089350df9e9d463))
+
 ## [0.6.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.5.0...v0.6.0) (2023-02-26)
 
 
