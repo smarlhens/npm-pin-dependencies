@@ -33,7 +33,7 @@ describe('validate package lock', () => {
 
   it('should return invalid lockfileversion 2 w/ packages only', async () => {
     const params = {
-      packageLockString: '{"lockfileVersion":2,"packages":{"node_modules/fake-package-1":{"version":"1.0.0"}}}',
+      packageLockString: '{"lockfileVersion":2,"packages":{"":{},"node_modules/fake-package-1":{"version":"1.0.0"}}}',
     };
     expect(() => validatePackageLockString(params)).toThrowError(/must have required property 'dependencies'/);
   });
@@ -55,7 +55,7 @@ describe('validate package lock', () => {
   it('should return valid lockfileversion 2 w/ dependencies & packages', async () => {
     const params = {
       packageLockString:
-        '{"lockfileVersion":2,"dependencies":{"fake-package-1":{"version":"1.0.0"}},"packages":{"node_modules/fake-package-1":{"version":"1.0.0"}}}',
+        '{"lockfileVersion":2,"dependencies":{"fake-package-1":{"version":"1.0.0"}},"packages":{"":{},"node_modules/fake-package-1":{"version":"1.0.0"}}}',
     };
     expect(validatePackageLockString(params)).toEqual(true);
   });
@@ -63,14 +63,14 @@ describe('validate package lock', () => {
   it('should return invalid lockfileversion 2 w/ dependencies w/ packages w/o version', async () => {
     const params = {
       packageLockString:
-        '{"lockfileVersion":2,"dependencies":{"fake-package-1":{"version":"1.0.0"}},"packages":{"node_modules/fake-package-1":{}}}',
+        '{"lockfileVersion":2,"dependencies":{"fake-package-1":{"version":"1.0.0"}},"packages":{"":{},"node_modules/fake-package-1":{}}}',
     };
     expect(() => validatePackageLockString(params)).toThrowError(/must have required property 'version'/);
   });
 
   it('should return valid lockfileversion 3 w/ packages', async () => {
     const params = {
-      packageLockString: '{"lockfileVersion":3,"packages":{"node_modules/fake-package-1":{"version":"1.0.0"}}}',
+      packageLockString: '{"lockfileVersion":3,"packages":{"":{},"node_modules/fake-package-1":{"version":"1.0.0"}}}',
     };
     expect(validatePackageLockString(params)).toEqual(true);
   });
@@ -84,7 +84,7 @@ describe('validate package lock', () => {
 
   it('should return invalid lockfileversion 3 w/ dependencies w/o version', async () => {
     const params = {
-      packageLockString: '{"lockfileVersion":3,"packages":{"node_modules/fake-package-1":{}}}',
+      packageLockString: '{"lockfileVersion":3,"packages":{"":{},"node_modules/fake-package-1":{}}}',
     };
     expect(() => validatePackageLockString(params)).toThrowError(/must have required property 'version'/);
   });

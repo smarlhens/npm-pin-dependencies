@@ -25,7 +25,7 @@ type PackageJson = {
 type LockDependency = { version: string };
 type LockDependencies = { [dependencyName: string]: LockDependency };
 type PackageLockDependencies = { dependencies: LockDependencies };
-type PackageLockPackages = { packages: LockDependencies };
+type PackageLockPackages = { packages: { '': { version?: string } } & LockDependencies };
 
 type PackageLockVersion1 = {
   lockfileVersion: 1;
@@ -217,7 +217,7 @@ const packageLockSchema: JSONSchemaType<PackageLock> = {
     packages: {
       type: 'object',
       patternProperties: {
-        '^.*$': {
+        '^.+$': {
           type: 'object',
           properties: {
             version: { type: 'string' },
