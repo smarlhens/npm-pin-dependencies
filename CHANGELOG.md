@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.8.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.7.0...v0.8.0) (2023-03-12)
+
+
+### Features
+
+* allow no version in root package ([ed64132](https://github.com/smarlhens/npm-pin-dependencies/commit/ed64132ee70f8ab186c69b69729b2484d13f76d6))
+* support resolve lock file by walking up parent directories ([acd5af4](https://github.com/smarlhens/npm-pin-dependencies/commit/acd5af43f45bbea1ea783a6d4914b5d00d080c0a))
+* support yarn v2 lock ([aef8f06](https://github.com/smarlhens/npm-pin-dependencies/commit/aef8f063fa8135cc8e954b3ef406d7794a683552))
+
+
+### Bug Fixes
+
+* **deps:** update dependency listr2 to v5.0.8 ([947e48a](https://github.com/smarlhens/npm-pin-dependencies/commit/947e48a97d6166f3033c382c9d85d48c17b9a58e))
+
+
+### Chores
+
+* **deps:** update dependency @swc/core to v1.3.38 ([748a2b1](https://github.com/smarlhens/npm-pin-dependencies/commit/748a2b19dc74abde786174eeaf45bf2bb8a7237d))
+* **deps:** update dependency @swc/core to v1.3.39 ([b3bc00d](https://github.com/smarlhens/npm-pin-dependencies/commit/b3bc00d24dcf344a308c6081e3d96f8f3f9fe940))
+* **deps:** update dependency @types/node to v18.15.0 ([77203e0](https://github.com/smarlhens/npm-pin-dependencies/commit/77203e091cdcc7ac4f8bc06dbedac18578f72dad))
+* **deps:** update dependency execa to v7.1.0 ([5264ffd](https://github.com/smarlhens/npm-pin-dependencies/commit/5264ffd1a65a6f9e06f23251857200f2fc72d097))
+* **deps:** update dependency lint-staged to v13.2.0 ([27830e4](https://github.com/smarlhens/npm-pin-dependencies/commit/27830e4983271834e0a8df97afc650eadde92f57))
+* **deps:** update dependency rimraf to v4.3.1 ([9c69499](https://github.com/smarlhens/npm-pin-dependencies/commit/9c694993452cc062e4e09eac6a8d2532b1d16a74))
+* **deps:** update dependency rimraf to v4.4.0 ([bfc3d4d](https://github.com/smarlhens/npm-pin-dependencies/commit/bfc3d4d1e8c945551ef1e6c94744eda4a8ed40b6))
+
 ## [0.7.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.6.0...v0.7.0) (2023-03-05)
 
 
