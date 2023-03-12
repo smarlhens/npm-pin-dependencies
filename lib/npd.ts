@@ -1,4 +1,5 @@
 import lockfile, { LockFileObject } from '@yarnpkg/lockfile';
+import { parseSyml } from '@yarnpkg/parsers';
 import Ajv, { JSONSchemaType, Schema } from 'ajv';
 import chalk from 'chalk';
 import Table from 'cli-table';
@@ -107,7 +108,15 @@ const yarnLockFileName = 'yarn.lock' as const;
 const packageJsonFileName = 'package.json' as const;
 export const parsePackageJsonString = (raw: string): PackageJson => JSON.parse(raw);
 export const parsePackageLockString = (raw: string): PackageLock => JSON.parse(raw);
-export const parseYarnLockString = (raw: string): YarnLock => lockfile.parse(raw).object;
+export const parseYarnLockString = (raw: string): YarnLock => {
+  if (raw.includes('# yarn lockfile v1')) {
+    return lockfile.parse(raw).object;
+  } else if (/^__metadata:\s*version: (\d)(?:\r|\n)/m.test(raw)) {
+    return parseSyml(raw) as YarnLock;
+  } else {
+    throw new Error('Lock file version not yet supported.');
+  }
+};
 const debugNamespace: string = 'npd' as const;
 const debug: Debugger = Debug(debugNamespace);
 const namespaces = () => Debug.disable();
@@ -400,10 +409,16 @@ const npmResolver = ({ packageLockFile }: NpmDependenciesInput): DependencyVersi
   }
 };
 
-const yarnResolver = ({ yarnLockFile }: YarnDependenciesInput): DependencyVersionResolver => {
+const yarnResolver = ({ yarnLockFile }: { yarnLockFile: LockFile }): DependencyVersionResolver => {
   return {
-    lockedDependencies: yarnLockFile!.content,
-    resolveDependencyKey: ({ name, version }) => `${name}@${version}`,
+    lockedDependencies: yarnLockFile.content,
+    resolveDependencyKey: ({ name, version }) => {
+      if (!('__metadata' in yarnLockFile.content)) {
+        return `${name}@${version}`;
+      } else {
+        return `${name}@npm:${version}`;
+      }
+    },
   };
 };
 
@@ -426,11 +441,13 @@ export const pinDependencies = (ctx: PinDependenciesInput): PinDependenciesOutpu
     typeof ctx.yarnLockFile.mtime !== 'undefined'
   ) {
     resolver =
-      ctx.packageLockFile.mtime.getTime() > ctx.yarnLockFile.mtime.getTime() ? npmResolver(ctx) : yarnResolver(ctx);
+      ctx.packageLockFile.mtime.getTime() > ctx.yarnLockFile.mtime.getTime()
+        ? npmResolver(ctx)
+        : yarnResolver({ yarnLockFile: ctx.yarnLockFile });
   } else if (isLockFileDefined(ctx.packageLockFile)) {
     resolver = npmResolver(ctx);
   } else if (isLockFileDefined(ctx.yarnLockFile)) {
-    resolver = yarnResolver(ctx);
+    resolver = yarnResolver({ yarnLockFile: ctx.yarnLockFile });
   } else {
     throw new Error(`Lock file is missing.`);
   }
@@ -533,32 +550,34 @@ const lockFileConfigurations: LockFileConfiguration[] = [
   },
 ];
 
+const resolveLockFileContent = ({ path, config }: { path: string; config: LockFileConfiguration }) =>
+  Promise.all([
+    config,
+    fs
+      .readFile(path, 'utf8')
+      .then(raw => config.parse(raw))
+      .catch(() => undefined),
+    fs
+      .stat(path)
+      .then(payload => payload.mtime)
+      .catch(() => undefined),
+  ]);
+
+const rawToFetchedLockFile = ([config, content, mtime]: [
+  LockFileConfiguration,
+  any,
+  Date | undefined,
+]): FetchedLockFile => ({
+  config,
+  content,
+  mtime,
+});
+
+const filterLockFileWithUndefinedContent = (lockFile: FetchedLockFile): boolean =>
+  typeof lockFile.content !== 'undefined';
+
 const readLockFile = async ({ ctx }: { ctx: PinDependenciesContext }): Promise<PinDependenciesContext> => {
   const fileExists = await Promise.all(lockFileConfigurations.map(config => pathExists(config.filePath)));
-
-  const resolveLockFileContent = ({ path, config }: { path: string; config: LockFileConfiguration }) =>
-    Promise.all([
-      config,
-      fs
-        .readFile(path, 'utf8')
-        .then(raw => config.parse(raw))
-        .catch(() => undefined),
-      fs
-        .stat(path)
-        .then(payload => payload.mtime)
-        .catch(() => undefined),
-    ]);
-  const rawToFetchedLockFile = ([config, content, mtime]: [
-    LockFileConfiguration,
-    any,
-    Date | undefined,
-  ]): FetchedLockFile => ({
-    config,
-    content,
-    mtime,
-  });
-  const filterLockFileWithUndefinedContent = (lockFile: FetchedLockFile): boolean =>
-    typeof lockFile.content !== 'undefined';
 
   const fetchedLockFiles: FetchedLockFile[] = (
     await Promise.all(
@@ -628,7 +647,7 @@ const pinDependenciesReadFileTasks = ({
         task: async (ctx: PinDependenciesContext) => {
           ctx.packageJson = await fs
             .readFile(options.packageJsonPath, 'utf8')
-            .then<PackageJson>(raw => JSON.parse(raw));
+            .then<PackageJson>(raw => parsePackageJsonString(raw));
         },
       },
     ],
