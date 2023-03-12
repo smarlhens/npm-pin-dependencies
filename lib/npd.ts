@@ -3,6 +3,7 @@ import Ajv, { JSONSchemaType, Schema } from 'ajv';
 import chalk from 'chalk';
 import Table from 'cli-table';
 import Debug, { Debugger } from 'debug';
+import { findUpMultiple, pathExists } from 'find-up';
 import { Listr, ListrBaseClassOptions, ListrGetRendererOptions, ListrRenderer, ListrTaskWrapper } from 'listr2';
 import type { ListrDefaultRendererOptions, ListrRendererValue } from 'listr2';
 import fs from 'node:fs/promises';
@@ -55,7 +56,7 @@ type VersionToPin = {
 
 type LockFile = {
   content: any;
-  mtime?: Date;
+  mtime?: Date | undefined;
 };
 
 type NpmDependenciesInput = {
@@ -504,26 +505,107 @@ export const pinDependenciesFromString = (ctx: PinDependenciesFromString): PinDe
   }
 };
 
-const readLockFile = async ({
-  lockPath,
-  parse,
-  lockFileName,
-}: {
-  lockFileName: string;
-  lockPath: string;
+type LockFileConfiguration = {
+  fileName: string;
+  filePath: string;
   parse: (raw: string) => any;
-}): Promise<LockFile | undefined> => {
-  try {
-    const packageLock: Partial<LockFile> = {};
-    [packageLock.content, packageLock.mtime] = await Promise.all([
-      fs.readFile(lockPath, 'utf8').then(raw => parse(raw)),
-      fs.stat(lockPath).then(payload => payload.mtime),
+  contextKey: 'packageLockFile' | 'yarnLockFile';
+};
+
+type FetchedLockFile = {
+  config: LockFileConfiguration;
+  content: any;
+  mtime: Date | undefined;
+};
+
+const lockFileConfigurations: LockFileConfiguration[] = [
+  {
+    fileName: packageLockFileName,
+    filePath: join(process.cwd(), packageLockFileName),
+    parse: parsePackageLockString,
+    contextKey: 'packageLockFile',
+  },
+  {
+    fileName: yarnLockFileName,
+    filePath: join(process.cwd(), yarnLockFileName),
+    parse: parseYarnLockString,
+    contextKey: 'yarnLockFile',
+  },
+];
+
+const readLockFile = async ({ ctx }: { ctx: PinDependenciesContext }): Promise<PinDependenciesContext> => {
+  const fileExists = await Promise.all(lockFileConfigurations.map(config => pathExists(config.filePath)));
+
+  const resolveLockFileContent = ({ path, config }: { path: string; config: LockFileConfiguration }) =>
+    Promise.all([
+      config,
+      fs
+        .readFile(path, 'utf8')
+        .then(raw => config.parse(raw))
+        .catch(() => undefined),
+      fs
+        .stat(path)
+        .then(payload => payload.mtime)
+        .catch(() => undefined),
     ]);
-    return packageLock as LockFile;
-  } catch (_) {
-    debug(`${lockFileName} not found.`);
-    return undefined;
+  const rawToFetchedLockFile = ([config, content, mtime]: [
+    LockFileConfiguration,
+    any,
+    Date | undefined,
+  ]): FetchedLockFile => ({
+    config,
+    content,
+    mtime,
+  });
+  const filterLockFileWithUndefinedContent = (lockFile: FetchedLockFile): boolean =>
+    typeof lockFile.content !== 'undefined';
+
+  const fetchedLockFiles: FetchedLockFile[] = (
+    await Promise.all(
+      fileExists.map((fileExist, index) => {
+        const config = lockFileConfigurations[index];
+
+        if (!fileExist) {
+          return Promise.all([config, undefined, undefined]);
+        }
+
+        return resolveLockFileContent({ config, path: config.filePath });
+      }),
+    )
+  )
+    .map(rawToFetchedLockFile)
+    .filter(filterLockFileWithUndefinedContent);
+
+  if (fetchedLockFiles.some(fetchedLockFile => typeof fetchedLockFile.content !== 'undefined')) {
+    fetchedLockFiles.forEach(fetchedLockFile => {
+      ctx[fetchedLockFile.config.contextKey] = { content: fetchedLockFile.content, mtime: fetchedLockFile.mtime };
+    });
+
+    return Promise.resolve(ctx);
   }
+
+  const findUpLockPaths: string[] = await findUpMultiple(
+    lockFileConfigurations.map(config => config.fileName),
+    { type: 'file' },
+  );
+
+  const findUpLockFiles: FetchedLockFile[] = (
+    await Promise.all(
+      lockFileConfigurations.map(config => {
+        const path = findUpLockPaths.find(absolutePath => absolutePath.endsWith(config.fileName))!;
+
+        return resolveLockFileContent({ config, path });
+      }),
+    )
+  )
+    .map(rawToFetchedLockFile)
+    .filter(filterLockFileWithUndefinedContent);
+
+  findUpLockFiles.forEach(findUpLockFile => {
+    ctx[findUpLockFile.config.contextKey] = { content: findUpLockFile.content, mtime: findUpLockFile.mtime };
+  });
+
+  return Promise.resolve(ctx);
 };
 
 const pinDependenciesReadFileTasks = ({
@@ -536,23 +618,9 @@ const pinDependenciesReadFileTasks = ({
   task.newListr(
     [
       {
-        title: 'Reading package-lock.json...',
+        title: 'Reading lock files...',
         task: async (ctx: PinDependenciesContext) => {
-          ctx.packageLockFile = await readLockFile({
-            lockPath: options.packageLockPath,
-            parse: parsePackageLockString,
-            lockFileName: packageLockFileName,
-          });
-        },
-      },
-      {
-        title: 'Reading yarn.lock...',
-        task: async (ctx: PinDependenciesContext) => {
-          ctx.yarnLockFile = await readLockFile({
-            lockPath: options.yarnLockPath,
-            parse: parseYarnLockString,
-            lockFileName: yarnLockFileName,
-          });
+          Object.assign(ctx, await readLockFile({ ctx }));
         },
       },
       {

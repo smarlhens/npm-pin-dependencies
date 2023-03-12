@@ -18,12 +18,10 @@ describe('pin from cli', () => {
     expect(stdout).toEqual(
       '[STARTED] Pinning dependency versions in package.json file...\n' +
         '[STARTED] Reading...\n' +
-        '[STARTED] Reading package-lock.json...\n' +
-        '[STARTED] Reading yarn.lock...\n' +
+        '[STARTED] Reading lock files...\n' +
         '[STARTED] Reading package.json...\n' +
-        '[SUCCESS] Reading yarn.lock...\n' +
-        '[SUCCESS] Reading package-lock.json...\n' +
         '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading lock files...\n' +
         '[SUCCESS] Reading...\n' +
         '[STARTED] Validating...\n' +
         '[STARTED] Validating package-lock.json...\n' +
@@ -99,12 +97,10 @@ describe('pin from cli', () => {
     expect(stdout).toEqual(
       '[STARTED] Pinning dependency versions in package.json file...\n' +
         '[STARTED] Reading...\n' +
-        '[STARTED] Reading package-lock.json...\n' +
-        '[STARTED] Reading yarn.lock...\n' +
+        '[STARTED] Reading lock files...\n' +
         '[STARTED] Reading package.json...\n' +
-        '[SUCCESS] Reading yarn.lock...\n' +
-        '[SUCCESS] Reading package-lock.json...\n' +
         '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading lock files...\n' +
         '[SUCCESS] Reading...\n' +
         '[STARTED] Validating...\n' +
         '[STARTED] Validating package-lock.json...\n' +
@@ -140,12 +136,10 @@ describe('pin from cli', () => {
     expect(stdout).toEqual(
       '[STARTED] Pinning dependency versions in package.json file...\n' +
         '[STARTED] Reading...\n' +
-        '[STARTED] Reading package-lock.json...\n' +
-        '[STARTED] Reading yarn.lock...\n' +
+        '[STARTED] Reading lock files...\n' +
         '[STARTED] Reading package.json...\n' +
-        '[SUCCESS] Reading yarn.lock...\n' +
-        '[SUCCESS] Reading package-lock.json...\n' +
         '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading lock files...\n' +
         '[SUCCESS] Reading...\n' +
         '[STARTED] Validating...\n' +
         '[STARTED] Validating package-lock.json...\n' +
@@ -181,12 +175,10 @@ describe('pin from cli', () => {
     expect(stdout).toEqual(
       '[STARTED] Pinning dependency versions in package.json file...\n' +
         '[STARTED] Reading...\n' +
-        '[STARTED] Reading package-lock.json...\n' +
-        '[STARTED] Reading yarn.lock...\n' +
+        '[STARTED] Reading lock files...\n' +
         '[STARTED] Reading package.json...\n' +
-        '[SUCCESS] Reading yarn.lock...\n' +
-        '[SUCCESS] Reading package-lock.json...\n' +
         '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading lock files...\n' +
         '[SUCCESS] Reading...\n' +
         '[STARTED] Validating...\n' +
         '[STARTED] Validating package-lock.json...\n' +
@@ -222,12 +214,10 @@ describe('pin from cli', () => {
     expect(stdout).toEqual(
       '[STARTED] Pinning dependency versions in package.json file...\n' +
         '[STARTED] Reading...\n' +
-        '[STARTED] Reading package-lock.json...\n' +
-        '[STARTED] Reading yarn.lock...\n' +
+        '[STARTED] Reading lock files...\n' +
         '[STARTED] Reading package.json...\n' +
-        '[SUCCESS] Reading yarn.lock...\n' +
-        '[SUCCESS] Reading package-lock.json...\n' +
         '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading lock files...\n' +
         '[SUCCESS] Reading...\n' +
         '[STARTED] Validating...\n' +
         '[STARTED] Validating package-lock.json...\n' +
@@ -264,12 +254,10 @@ describe('pin from cli', () => {
     expect(stdout).toEqual(
       '[STARTED] Pinning dependency versions in package.json file...\n' +
         '[STARTED] Reading...\n' +
-        '[STARTED] Reading package-lock.json...\n' +
-        '[STARTED] Reading yarn.lock...\n' +
+        '[STARTED] Reading lock files...\n' +
         '[STARTED] Reading package.json...\n' +
-        '[SUCCESS] Reading package-lock.json...\n' +
-        '[SUCCESS] Reading yarn.lock...\n' +
         '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading lock files...\n' +
         '[SUCCESS] Reading...\n' +
         '[STARTED] Validating...\n' +
         '[STARTED] Validating package-lock.json...\n' +
@@ -277,6 +265,58 @@ describe('pin from cli', () => {
         '[STARTED] Validating package.json...\n' +
         '[SKIPPED] Validating package-lock.json...\n' +
         '[SUCCESS] Validating yarn.lock...\n' +
+        '[SUCCESS] Validating package.json...\n' +
+        '[SUCCESS] Validating...\n' +
+        '[STARTED] Computing which dependency versions are to pin...\n' +
+        '[SUCCESS] Computing which dependency versions are to pin...\n' +
+        '[STARTED] Output dependency versions that can be pinned...\n' +
+        '[TITLE] Dependency versions that can be pinned:\n' +
+        '[TITLE] \n' +
+        '[TITLE]  fake-package-1  ^1.0.0  →  1.0.3 \n' +
+        '[TITLE]  fake-package-2  ^2.0.0  →  2.0.1 \n' +
+        '[TITLE]  fake-package-3  ^3.0.0  →  3.1.9 \n' +
+        '[TITLE] \n' +
+        `[TITLE] Run ${chalk.cyan('npd -u')} to upgrade package.json.\n` +
+        '[SUCCESS] Output dependency versions that can be pinned...\n' +
+        '[STARTED] Updating package.json...\n' +
+        '[SKIPPED] Update is disabled by default.\n' +
+        '[STARTED] Enabling save-exact using .npmrc...\n' +
+        '[SKIPPED] Enabling save-exact is disabled by default.\n' +
+        '[SUCCESS] Dependency versions that can be pinned:\n' +
+        '[SUCCESS] \n' +
+        '[SUCCESS]  fake-package-1  ^1.0.0  →  1.0.3 \n' +
+        '[SUCCESS]  fake-package-2  ^2.0.0  →  2.0.1 \n' +
+        '[SUCCESS]  fake-package-3  ^3.0.0  →  3.1.9 \n' +
+        '[SUCCESS] \n' +
+        `[SUCCESS] Run ${chalk.cyan('npd -u')} to upgrade package.json.`,
+    );
+  }, 10000);
+
+  it('should output dependency versions to pin using workspace', async () => {
+    const execaOptions: Options = {
+      cwd: resolve(process.cwd(), 'examples', 'workspace', 'foo'),
+      stdio: 'pipe',
+      cleanup: true,
+    };
+
+    const { stdout } = await execaCommand(
+      `node --experimental-specifier-resolution=node --loader ts-node/esm ${resolve(process.cwd(), 'bin', 'npd.ts')}`,
+      execaOptions,
+    );
+    expect(stdout).toEqual(
+      '[STARTED] Pinning dependency versions in package.json file...\n' +
+        '[STARTED] Reading...\n' +
+        '[STARTED] Reading lock files...\n' +
+        '[STARTED] Reading package.json...\n' +
+        '[SUCCESS] Reading package.json...\n' +
+        '[SUCCESS] Reading lock files...\n' +
+        '[SUCCESS] Reading...\n' +
+        '[STARTED] Validating...\n' +
+        '[STARTED] Validating package-lock.json...\n' +
+        '[STARTED] Validating yarn.lock...\n' +
+        '[STARTED] Validating package.json...\n' +
+        '[SKIPPED] Validating yarn.lock...\n' +
+        '[SUCCESS] Validating package-lock.json...\n' +
         '[SUCCESS] Validating package.json...\n' +
         '[SUCCESS] Validating...\n' +
         '[STARTED] Computing which dependency versions are to pin...\n' +
