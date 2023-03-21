@@ -85,7 +85,7 @@
     "@types/node": "18.15.5",
     "@types/semver": "7.3.13",
     "@types/update-notifier": "6.0.2",
-    "@types/yargs": "17.0.22",
+    "@types/yargs": "17.0.23",
     "@types/yarnpkg__lockfile": "1.1.5",
     "@vitest/coverage-c8": "0.29.3",
     "execa": "7.1.1",
