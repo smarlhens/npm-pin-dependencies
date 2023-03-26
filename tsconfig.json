@@ -8,7 +8,7 @@
     "sourceMap": false,
     "declaration": false,
     "removeComments": true,
-    "moduleResolution": "Node16",
+    "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
@@ -35,7 +35,7 @@
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "exactOptionalPropertyTypes": true,
-    "importsNotUsedAsValues": "error",
+    "verbatimModuleSyntax": true,
     "checkJs": true
   },
   "include": ["bin/npd.ts"]
