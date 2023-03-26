@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.8.1](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.8.0...v0.8.1) (2023-03-26)
+
+
+### Chores
+
+* **deps:** update dependency @commitlint/cli to v17.5.0 ([54f01a7](https://github.com/smarlhens/npm-pin-dependencies/commit/54f01a7d5544a9d9d6b37e9dbd650dce074d8379))
+* **deps:** update dependency @swc/core to v1.3.40 ([7303163](https://github.com/smarlhens/npm-pin-dependencies/commit/73031635c4a1c6ad49908e3341f2324068e6b9de))
+* **deps:** update dependency @swc/core to v1.3.41 ([fb4541d](https://github.com/smarlhens/npm-pin-dependencies/commit/fb4541df3b76282cb7f266a8f2804def7d9489c6))
+* **deps:** update dependency @swc/core to v1.3.42 ([1d55417](https://github.com/smarlhens/npm-pin-dependencies/commit/1d55417125ddc2bcaeab972219160feabbf93b36))
+* **deps:** update dependency @types/node to v18.15.10 ([f178025](https://github.com/smarlhens/npm-pin-dependencies/commit/f1780257b41460a5fa8f0aed8963703abf837948))
+* **deps:** update dependency @types/node to v18.15.3 ([c2480b0](https://github.com/smarlhens/npm-pin-dependencies/commit/c2480b01da860868c29091e8ed5be89bb0a091c3))
+* **deps:** update dependency @types/node to v18.15.5 ([603a820](https://github.com/smarlhens/npm-pin-dependencies/commit/603a82036bdd04f1a1a95c743bb9dec2c945ca06))
+* **deps:** update dependency @types/node to v18.15.6 ([f53ceac](https://github.com/smarlhens/npm-pin-dependencies/commit/f53ceaccaea837bbebd1173ed5d2b913e1db4330))
+* **deps:** update dependency @types/node to v18.15.8 ([889e747](https://github.com/smarlhens/npm-pin-dependencies/commit/889e7479a1880fd10c99ab13e4ae739d11633841))
+* **deps:** update dependency @types/yargs to v17.0.23 ([72ebcd5](https://github.com/smarlhens/npm-pin-dependencies/commit/72ebcd5caea58938ef962aec1c44f82def23a1e1))
+* **deps:** update dependency execa to v7.1.1 ([bb9cccf](https://github.com/smarlhens/npm-pin-dependencies/commit/bb9cccfc6139c274aa3335a530e2652793e6bbf9))
+* **deps:** update dependency prettier to v2.8.5 ([91d41af](https://github.com/smarlhens/npm-pin-dependencies/commit/91d41af721c53c32a434ac0b85cf52b1efe88ee8))
+* **deps:** update dependency prettier to v2.8.6 ([0217b43](https://github.com/smarlhens/npm-pin-dependencies/commit/0217b43ac7b3187925e25579ade6658af3ba4c75))
+* **deps:** update dependency prettier to v2.8.7 ([b3b2560](https://github.com/smarlhens/npm-pin-dependencies/commit/b3b256069d405c186a170707c3069dd679903551))
+* **deps:** update dependency rimraf to v4.4.1 ([4af8945](https://github.com/smarlhens/npm-pin-dependencies/commit/4af894537bcee55f885e9353c821be22fb736241))
+* **deps:** update dependency tsup to v6.7.0 ([bc5c4d8](https://github.com/smarlhens/npm-pin-dependencies/commit/bc5c4d8394a96842cafa681b4322da2b0feaed4e))
+* **deps:** update dependency typescript to v5 ([8eaef43](https://github.com/smarlhens/npm-pin-dependencies/commit/8eaef4382538059682302cf130e4c82bfd0497e2))
+* **deps:** update vitest monorepo to v0.29.3 ([ddd1ac8](https://github.com/smarlhens/npm-pin-dependencies/commit/ddd1ac8994c7c6e700296ed4fb6a9b5a87e2c126))
+* **deps:** update vitest monorepo to v0.29.7 ([af537d2](https://github.com/smarlhens/npm-pin-dependencies/commit/af537d28d6734455348f89abc07afc0f538cf38d))
+
 ## [0.8.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.7.0...v0.8.0) (2023-03-12)
 
 
