@@ -64,7 +64,7 @@
   },
   "dependencies": {
     "@yarnpkg/lockfile": "1.1.0",
-    "@yarnpkg/parsers": "3.0.0-rc.40",
+    "@yarnpkg/parsers": "3.0.0-rc.41",
     "ajv": "8.12.0",
     "chalk": "5.2.0",
     "cli-table": "0.3.11",
