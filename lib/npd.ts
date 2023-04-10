@@ -8,9 +8,15 @@ import Table from 'cli-table';
 import type { Debugger } from 'debug';
 import Debug from 'debug';
 import { findUpMultiple, pathExists } from 'find-up';
-import type { ListrBaseClassOptions, ListrGetRendererOptions, ListrRenderer, ListrTaskWrapper } from 'listr2';
+import type {
+  ListrBaseClassOptions,
+  ListrGetRendererOptions,
+  ListrRenderer,
+  ListrRendererOptions,
+  ListrRendererValue,
+  ListrTaskWrapper,
+} from 'listr2';
 import { Listr } from 'listr2';
-import type { ListrDefaultRendererOptions, ListrRendererValue } from 'listr2';
 import fs from 'node:fs/promises';
 import { join, normalize } from 'node:path';
 import * as semver from 'semver';
@@ -129,7 +135,7 @@ const enableNamespaces = (namespaces: string): void => Debug.enable(namespaces);
 const renderer = (
   { debug, quiet, verbose }: { debug?: boolean; quiet?: boolean; verbose?: boolean },
   env = process.env,
-): ListrDefaultRendererOptions<ListrRendererValue> => {
+): ListrRendererOptions<ListrRendererValue, ListrRendererValue> => {
   const rendererOptions: ListrGetRendererOptions<ListrRendererValue> = {
     formatOutput: 'wrap',
     dateFormat: false,
@@ -168,7 +174,7 @@ export const pinDependenciesFromCLI = async (args: CLIArgs): Promise<PinDependen
     yarnLockPath: join(process.cwd(), yarnLockFileName),
   };
 
-  const context: ListrBaseClassOptions<PinDependenciesContext, ListrRendererValue> = {
+  const context: ListrBaseClassOptions<PinDependenciesContext, ListrRendererValue, ListrRendererValue> = {
     ...renderer({ quiet: options.quiet, debug: options.debug, verbose: options.verbose }),
   };
 
@@ -787,8 +793,8 @@ const pinDependenciesCommand = ({
   context,
 }: {
   options: Options;
-  context: ListrBaseClassOptions<PinDependenciesContext, ListrRendererValue>;
-}): Listr<PinDependenciesContext, ListrRendererValue> => {
+  context: ListrBaseClassOptions<PinDependenciesContext, ListrRendererValue, ListrRendererValue>;
+}): Listr<PinDependenciesContext, ListrRendererValue, ListrRendererValue> => {
   return new Listr(
     [
       {
