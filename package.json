@@ -87,7 +87,7 @@
     "@types/update-notifier": "6.0.2",
     "@types/yargs": "17.0.24",
     "@types/yarnpkg__lockfile": "1.1.5",
-    "@vitest/coverage-c8": "0.29.8",
+    "@vitest/coverage-c8": "0.30.0",
     "execa": "7.1.1",
     "husky": "8.0.3",
     "lint-staged": "13.2.1",
@@ -98,7 +98,7 @@
     "tslib": "2.5.0",
     "tsup": "6.7.0",
     "typescript": "5.0.4",
-    "vitest": "0.29.8"
+    "vitest": "0.30.0"
   },
   "engines": {
     "node": "^16.14.0 || ^18.0.0",
