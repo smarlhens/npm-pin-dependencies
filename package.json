@@ -70,7 +70,7 @@
     "cli-table": "0.3.11",
     "debug": "4.3.4",
     "find-up": "6.3.0",
-    "listr2": "6.2.0",
+    "listr2": "6.3.0",
     "semver": "7.4.0",
     "update-notifier": "6.0.2",
     "yargs": "17.7.1"
