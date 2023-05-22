@@ -84,7 +84,7 @@
     "@types/debug": "4.1.7",
     "@types/node": "18.16.14",
     "@types/semver": "7.5.0",
-    "@types/update-notifier": "6.0.2",
+    "@types/update-notifier": "6.0.4",
     "@types/yargs": "17.0.24",
     "@types/yarnpkg__lockfile": "1.1.5",
     "@vitest/coverage-c8": "0.31.1",
