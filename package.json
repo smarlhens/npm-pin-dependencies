@@ -90,7 +90,7 @@
     "@vitest/coverage-c8": "0.32.2",
     "execa": "7.1.1",
     "husky": "8.0.3",
-    "lint-staged": "13.2.2",
+    "lint-staged": "13.2.3",
     "prettier": "2.8.8",
     "rimraf": "5.0.1",
     "sort-package-json": "2.4.1",
