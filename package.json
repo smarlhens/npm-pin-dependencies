@@ -71,7 +71,7 @@
     "debug": "4.3.4",
     "find-up": "6.3.0",
     "listr2": "6.6.0",
-    "semver": "7.5.3",
+    "semver": "7.5.4",
     "update-notifier": "6.0.2",
     "yargs": "17.7.2"
   },
