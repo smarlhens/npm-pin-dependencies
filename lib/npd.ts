@@ -1,5 +1,5 @@
 import type { LockFileObject } from '@yarnpkg/lockfile';
-import lockfile from '@yarnpkg/lockfile';
+import { parse as parseYarnLockfile } from '@yarnpkg/lockfile';
 import { parseSyml } from '@yarnpkg/parsers';
 import type { JSONSchemaType, Schema } from 'ajv';
 import Ajv from 'ajv';
@@ -118,11 +118,11 @@ const yarnLockFileName = 'yarn.lock' as const;
 const packageJsonFileName = 'package.json' as const;
 export const parsePackageJsonString = (raw: string): PackageJson => JSON.parse(raw);
 export const parsePackageLockString = (raw: string): PackageLock => JSON.parse(raw);
-export const parseYarnLockString = (raw: string): YarnLock => {
+export const parseYarnLockString = (raw: string): LockFileObject => {
   if (raw.includes('# yarn lockfile v1')) {
-    return lockfile.parse(raw).object;
+    return parseYarnLockfile(raw).object;
   } else if (/^__metadata:\s*version: (\d)(?:\r|\n)/m.test(raw)) {
-    return parseSyml(raw) as YarnLock;
+    return parseSyml(raw) as LockFileObject;
   } else {
     throw new Error('Lock file version not yet supported.');
   }
