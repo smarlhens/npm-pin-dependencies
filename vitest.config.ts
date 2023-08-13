@@ -8,10 +8,14 @@ export default defineConfig({
     restoreMocks: true,
     mockReset: true,
     deps: {
-      inline: ['@yarnpkg/lockfile'],
+      optimizer: {
+        web: {
+          include: ['@yarnpkg/lockfile'],
+        },
+      },
     },
     coverage: {
-      provider: 'c8',
+      provider: 'v8',
       clean: true,
       cleanOnRerun: true,
       reporter: ['cobertura', 'text', 'html'],
