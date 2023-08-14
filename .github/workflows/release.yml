@@ -3,7 +3,7 @@ name: release
 on: workflow_dispatch
 
 env:
-  NODE_VERSION: '16.14.0'
+  NODE_VERSION: '16.17.0'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -34,6 +34,8 @@ jobs:
         run: npm run test:ci
       - name: Build
         run: npm run build
+      - name: Run knip
+        run: npx knip
       - name: Release
         id: release
         uses: google-github-actions/release-please-action@v3
