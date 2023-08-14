@@ -5,11 +5,11 @@ on:
     types: [created]
 
 env:
-  NODE_VERSION: '16.14.0'
+  NODE_VERSION: '16.17.0'
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3

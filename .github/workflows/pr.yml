@@ -11,10 +11,10 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
-        node: ['16.14.0', '18.0.0', '20.0.0']
+        node: ['16.17.0', '18.6.0', '20.0.0']
 
     steps:
       - name: Checkout source code
@@ -38,3 +38,5 @@ jobs:
         run: npm run test:ci
       - name: Build
         run: npm run build
+      - name: Run knip
+        run: npx knip
