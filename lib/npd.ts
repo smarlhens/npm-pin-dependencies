@@ -1,5 +1,5 @@
 import type { LockFileObject } from '@yarnpkg/lockfile';
-import { parse as parseYarnLockfile } from '@yarnpkg/lockfile';
+import * as lockfile from '@yarnpkg/lockfile';
 import { parseSyml } from '@yarnpkg/parsers';
 import type { JSONSchemaType, Schema } from 'ajv';
 import Ajv from 'ajv';
@@ -120,7 +120,7 @@ export const parsePackageJsonString = (raw: string): PackageJson => JSON.parse(r
 export const parsePackageLockString = (raw: string): PackageLock => JSON.parse(raw);
 export const parseYarnLockString = (raw: string): LockFileObject => {
   if (raw.includes('# yarn lockfile v1')) {
-    return parseYarnLockfile(raw).object;
+    return lockfile.parse(raw).object;
   } else if (/^__metadata:\s*version: (\d)(?:\r|\n)/m.test(raw)) {
     return parseSyml(raw) as LockFileObject;
   } else {
@@ -642,7 +642,7 @@ const pinDependenciesReadFileTasks = ({
   task,
 }: {
   options: Options;
-  task: ListrTaskWrapper<PinDependenciesContext, typeof ListrRenderer>;
+  task: ListrTaskWrapper<PinDependenciesContext, typeof ListrRenderer, typeof ListrRenderer>;
 }): Listr<PinDependenciesContext, ListrRendererValue, ListrRendererValue> =>
   task.newListr(
     [
@@ -669,7 +669,7 @@ const pinDependenciesReadFileTasks = ({
 const pinDependenciesValidateTasks = ({
   task,
 }: {
-  task: ListrTaskWrapper<PinDependenciesContext, typeof ListrRenderer>;
+  task: ListrTaskWrapper<PinDependenciesContext, typeof ListrRenderer, typeof ListrRenderer>;
 }): Listr<PinDependenciesContext, ListrRendererValue, ListrRendererValue> =>
   task.newListr(
     [
@@ -704,7 +704,7 @@ const pinDependenciesTasks = ({
   task,
 }: {
   options: Options;
-  task: ListrTaskWrapper<PinDependenciesContext, typeof ListrRenderer>;
+  task: ListrTaskWrapper<PinDependenciesContext, typeof ListrRenderer, typeof ListrRenderer>;
 }): Listr<PinDependenciesContext, ListrRendererValue, ListrRendererValue> =>
   task.newListr([
     {
