@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.3](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.8.2...v0.8.3) (2023-10-13)
+
+
+### Chores
+
+* **deps:** bump to node v18 ([a50725f](https://github.com/smarlhens/npm-pin-dependencies/commit/a50725f94ced6ce8a87327bcf3b01f5a3fb10824))
+* update deps ([f0020fe](https://github.com/smarlhens/npm-pin-dependencies/commit/f0020fe16b574818a93615403265f25053122140))
+
 ## [0.8.2](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.8.1...v0.8.2) (2023-08-13)
 
 
