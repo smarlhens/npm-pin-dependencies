@@ -492,6 +492,12 @@ export const pinDependencies = (ctx: PinDependenciesInput): PinDependenciesOutpu
 
     for (const dependencyName of Object.keys(packageJson[dependencyType])) {
       const userDefinedVersion = packageJson[dependencyType][dependencyName];
+
+      if (userDefinedVersion.startsWith('file:')) {
+        debug(`Dependency ${chalk.white(dependencyName)} is using a local path as version.`);
+        continue;
+      }
+
       let dependencyKey: string = resolver.resolveDependencyKey({
         name: dependencyName,
         version: userDefinedVersion,
