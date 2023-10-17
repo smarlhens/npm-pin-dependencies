@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { pinDependencies, PinDependenciesInput } from '../lib/npd.js';
+import { pinDependencies, type PinDependenciesInput } from '../lib/npd.js';
 
 describe('pin from obj', () => {
   it('should return dependency versions to pin using latest updated lock file', async () => {
@@ -102,5 +102,51 @@ describe('pin from obj', () => {
       },
     };
     expect(() => pinDependencies(params)).toThrowError(/Lock file is missing./);
+  });
+
+  it('should continue if dependency is linked but unresolved in packages', async () => {
+    const params: PinDependenciesInput = {
+      packageJson: {
+        dependencies: {
+          'fake-package-1': '1.0.0',
+        },
+      },
+      packageLockFile: {
+        content: {
+          lockfileVersion: 3,
+          packages: {
+            'node_modules/fake-package-1': { link: true, resolved: 'foobar/fake-package-1' },
+          },
+        },
+      },
+    };
+    const payload = pinDependencies(params);
+    expect(payload).toEqual({
+      packageJson: { dependencies: { 'fake-package-1': '1.0.0' } },
+      versionsToPin: [],
+    });
+  });
+
+  it('should continue if dependency is linked but resolved field missing', async () => {
+    const params: PinDependenciesInput = {
+      packageJson: {
+        dependencies: {
+          'fake-package-1': '1.0.0',
+        },
+      },
+      packageLockFile: {
+        content: {
+          lockfileVersion: 3,
+          packages: {
+            'node_modules/fake-package-1': { link: true },
+          },
+        },
+      },
+    };
+    const payload = pinDependencies(params);
+    expect(payload).toEqual({
+      packageJson: { dependencies: { 'fake-package-1': '1.0.0' } },
+      versionsToPin: [],
+    });
   });
 });
