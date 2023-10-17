@@ -149,4 +149,31 @@ describe('pin from obj', () => {
       versionsToPin: [],
     });
   });
+
+  it('should continue if dependency is using a local path as version', async () => {
+    const params: PinDependenciesInput = {
+      packageJson: {
+        dependencies: {
+          'fake-package-1': 'file:../vendor/foo.tgz',
+        },
+      },
+      packageLockFile: {
+        content: {
+          lockfileVersion: 3,
+          packages: {
+            'node_modules/fake-package-1': { version: '1.2.3', resolved: 'file:../vendor/foo.tgz' },
+          },
+        },
+      },
+    };
+    const payload = pinDependencies(params);
+    expect(payload).toEqual({
+      packageJson: {
+        dependencies: {
+          'fake-package-1': 'file:../vendor/foo.tgz',
+        },
+      },
+      versionsToPin: [],
+    });
+  });
 });
