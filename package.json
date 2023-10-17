@@ -1,7 +1,7 @@
 {
   "name": "@smarlhens/npm-pin-dependencies",
   "version": "0.8.3",
-  "description": "NPN tools to pin installed dependency versions written in TypeScript.",
+  "description": "NPM tool to pin down versions of installed dependencies written in TypeScript.",
   "keywords": [
     "node",
     "npm",
@@ -9,7 +9,9 @@
     "dependency",
     "dependencies",
     "version",
+    "versions",
     "pin",
+    "lock",
     "typescript"
   ],
   "homepage": "https://github.com/smarlhens/npm-pin-dependencies#readme",

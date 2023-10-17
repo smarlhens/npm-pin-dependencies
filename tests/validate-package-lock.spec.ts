@@ -75,6 +75,53 @@ describe('validate package lock', () => {
     expect(validatePackageLockString(params)).toEqual(true);
   });
 
+  it('should return valid lockfileversion 3 w/ packages w/ link + resolved', async () => {
+    const params = {
+      packageLockString: JSON.stringify({
+        lockfileVersion: 3,
+        packages: {
+          '': {},
+          'node_modules/fake-package-1': {
+            link: true,
+            resolved: 'toto/fake-package-1-foobar',
+          },
+          'toto/fake-package-1-foobar': { version: '1.2.3' },
+        },
+      }),
+    };
+    expect(validatePackageLockString(params)).toEqual(true);
+  });
+
+  it('should return valid lockfileversion 3 w/ packages w/ link w/o resolved', async () => {
+    const params = {
+      packageLockString: JSON.stringify({
+        lockfileVersion: 3,
+        packages: {
+          '': {},
+          'node_modules/fake-package-1': {
+            link: true,
+          },
+        },
+      }),
+    };
+    expect(validatePackageLockString(params)).toEqual(true);
+  });
+
+  it('should return invalid lockfileversion 3 w/ packages w/o link and version', async () => {
+    const params = {
+      packageLockString: JSON.stringify({
+        lockfileVersion: 3,
+        packages: {
+          '': {},
+          'node_modules/fake-package-1': {
+            resolved: 'toto/fake-package-1-foobar',
+          },
+        },
+      }),
+    };
+    expect(() => validatePackageLockString(params)).toThrowError(/must match exactly one schema in oneOf/);
+  });
+
   it('should return invalid lockfileversion 3 w/o packages', async () => {
     const params = {
       packageLockString: '{"lockfileVersion":3}',

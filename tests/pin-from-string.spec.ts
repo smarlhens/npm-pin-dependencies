@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { pinDependenciesFromString, PinDependenciesFromString } from '../lib/npd.js';
+import { pinDependenciesFromString, type PinDependenciesFromString } from '../lib/npd.js';
 
 describe('pin from string', () => {
   it('should return dependency versions to pin', async () => {

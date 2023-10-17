@@ -34,10 +34,14 @@ type PackageJson = {
   optionalDependencies?: Dependencies | undefined;
 };
 
-type LockDependency = { version: string };
-type LockDependencies = { [dependencyName: string]: LockDependency };
-type PackageLockDependencies = { dependencies: LockDependencies };
-type PackageLockPackages = { packages: { '': { version?: string } } & LockDependencies };
+type VersionedDependency = { version: string };
+type ResolvedDependency = { resolved?: string; link: boolean };
+type LockDependency = { version: string } | { resolved?: string; link: boolean };
+type LockDependencies<T> = { [dependencyName: string]: T };
+type PackageLockDependencies = { dependencies: LockDependencies<VersionedDependency> };
+type PackageLockPackages = {
+  packages: { '': { version?: string } } & LockDependencies<VersionedDependency | ResolvedDependency>;
+};
 
 type PackageLockVersion1 = {
   lockfileVersion: 1;
@@ -238,11 +242,27 @@ const packageLockSchema: JSONSchemaType<PackageLock> = {
       type: 'object',
       patternProperties: {
         '^.+$': {
-          type: 'object',
-          properties: {
-            version: { type: 'string' },
-          },
-          required: ['version'],
+          oneOf: [
+            {
+              type: 'object',
+              properties: {
+                version: { type: 'string' },
+              },
+              required: ['version'],
+            },
+            {
+              type: 'object',
+              properties: {
+                resolved: {
+                  type: 'string',
+                },
+                link: {
+                  type: 'boolean',
+                },
+              },
+              required: ['link'],
+            },
+          ],
         },
       },
     },
@@ -385,7 +405,7 @@ export const validatePackageJson = (ctx: Pick<PinDependenciesInput, 'packageJson
 
 type ResolveDependencyKey = ({ name, version }: { name: string; version: string }) => string;
 type DependencyVersionResolver = {
-  lockedDependencies: LockDependencies;
+  lockedDependencies: LockDependencies<VersionedDependency | ResolvedDependency>;
   resolveDependencyKey: ResolveDependencyKey;
 };
 
@@ -478,12 +498,25 @@ export const pinDependencies = (ctx: PinDependenciesInput): PinDependenciesOutpu
       });
       let packageLockDependency: LockDependency | undefined = resolver.lockedDependencies[dependencyKey];
       if (!packageLockDependency) {
-        debug(`Dependency ${chalk.white(dependencyKey)} is undefined in ${chalk.cyan('dependencies')}.`);
+        debug(`Dependency ${chalk.white(dependencyName)} is undefined in ${chalk.cyan('dependencies')}.`);
+        continue;
+      }
+
+      const isLinked = 'link' in packageLockDependency && packageLockDependency.link;
+      if (isLinked && 'resolved' in packageLockDependency) {
+        debug(
+          `Dependency ${chalk.white(dependencyName)} resolved using ${chalk.white(packageLockDependency.resolved)}.`,
+        );
+        packageLockDependency = resolver.lockedDependencies[packageLockDependency.resolved];
+      }
+
+      if (isLinked && !packageLockDependency) {
+        debug(`Dependency ${chalk.white(dependencyName)} is unresolved in ${chalk.cyan('dependencies')}.`);
         continue;
       }
 
       if (!('version' in packageLockDependency)) {
-        debug(`Dependency ${chalk.white(dependencyKey)} version is undefined.`);
+        debug(`Dependency ${chalk.white(dependencyName)} version is undefined.`);
         continue;
       }
 
