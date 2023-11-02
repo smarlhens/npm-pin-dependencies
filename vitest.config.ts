@@ -8,6 +8,7 @@ export default defineConfig({
     restoreMocks: true,
     mockReset: true,
     deps: {
+      interopDefault: false,
       optimizer: {
         web: {
           include: ['@yarnpkg/lockfile'],

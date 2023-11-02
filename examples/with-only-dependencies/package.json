@@ -1,7 +1,0 @@
-{
-  "name": "fake",
-  "private": true,
-  "dependencies": {
-    "fake-package-01": "1.0.0"
-  }
-}
