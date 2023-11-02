@@ -157,7 +157,12 @@ export const parsePackageJsonString = (raw: string): PackageJson => JSON.parse(r
 export const parsePackageLockString = (raw: string): PackageLock => JSON.parse(raw);
 export const parseYarnLockString = (raw: string): LockFileObject => {
   if (raw.includes('# yarn lockfile v1')) {
-    return lockfile.parse(raw).object;
+    try {
+      // @ts-ignore
+      return (lockfile.default || lockfile).parse(raw).object;
+    } catch (error) {
+      throw error;
+    }
   } else if (/^__metadata:\s*version: (\d)(?:\r|\n)/m.test(raw)) {
     return parseSyml(raw) as LockFileObject;
   } else {
@@ -645,6 +650,7 @@ export const getContextKey = (lockFiles: Record<ContextKey, LockFile | undefined
     ContextKey,
     LockFile,
   ][];
+
   if (definedLockFiles.length === 0) {
     throw new Error(`Lock file is missing.`);
   }
@@ -660,6 +666,7 @@ export const getContextKey = (lockFiles: Record<ContextKey, LockFile | undefined
       mtime: Date;
     },
   ][];
+
   if (timedLockFiles.length === 0) {
     throw new Error(`Unable to decide which lock file to use.`);
   }
@@ -886,6 +893,10 @@ const readLockFile = async ({ ctx }: { ctx: PinDependenciesContext }): Promise<P
     await Promise.all(
       lockFileConfigurations.map(config => {
         const path = findUpLockPaths.find(absolutePath => absolutePath.endsWith(config.fileName))!;
+
+        if (!path) {
+          return Promise.all([config, undefined, undefined]);
+        }
 
         return resolveLockFileContent({ config, path });
       }),

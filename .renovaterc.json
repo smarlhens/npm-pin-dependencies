@@ -10,16 +10,10 @@
   "labels": ["dependencies"],
   "packageRules": [
     {
-      "matchPackagePatterns": ["lint-staged", "prettier"],
-      "labels": ["linting"]
-    },
-    {
-      "matchPackagePatterns": ["husky", "commitizen", "^@commitlint", "cz-conventional-changelog"],
-      "labels": ["hooks"]
-    },
-    {
-      "matchDepTypes": ["optionalDependencies"],
-      "addLabels": ["optional"]
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["@types/node"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }
