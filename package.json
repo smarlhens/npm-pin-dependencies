@@ -65,6 +65,7 @@
     "test:watch": "vitest watch"
   },
   "dependencies": {
+    "@pnpm/lockfile-file": "8.1.4",
     "@yarnpkg/lockfile": "1.1.0",
     "@yarnpkg/parsers": "3.0.0-rc.53",
     "ajv": "8.12.0",
