@@ -1,3 +1,4 @@
+import { readWantedLockfile } from '@pnpm/lockfile-file';
 import type { LockFileObject } from '@yarnpkg/lockfile';
 import * as lockfile from '@yarnpkg/lockfile';
 import { parseSyml } from '@yarnpkg/parsers';
@@ -63,28 +64,59 @@ type YarnLock = {
   object: LockFileObject;
 };
 
+type PnpmLock =
+  | {
+      lockfileVersion: 5.4 | '5.4';
+      importers: Record<
+        string,
+        {
+          dependencies?: Record<string, string>;
+          optionalDependencies?: Record<string, string>;
+          devDependencies?: Record<string, string>;
+        }
+      >;
+    }
+  | {
+      lockfileVersion: 6.0 | '6.0';
+      importers: Record<
+        string,
+        {
+          dependencies?: Record<string, VersionedDependency>;
+          optionalDependencies?: Record<string, VersionedDependency>;
+          devDependencies?: Record<string, VersionedDependency>;
+        }
+      >;
+    };
+
 type VersionToPin = {
   dependency: string;
   version: string;
   pinnedVersion: string;
 };
 
-type LockFile = {
-  content: any;
+type LockFile<T extends any = any> = {
+  content: T;
   mtime?: Date | undefined;
 };
 
 type NpmDependenciesInput = {
-  packageLockFile?: LockFile | undefined;
+  packageLockFile?: LockFile<PackageLock> | undefined;
 };
 
 type YarnDependenciesInput = {
-  yarnLockFile?: LockFile | undefined;
+  yarnLockFile?: LockFile<LockFileObject> | undefined;
+};
+
+type PnpmDependenciesInput = {
+  pnpmLockFile?: LockFile<PnpmLock> | undefined;
 };
 
 type PinDependenciesPackage = { packageJson: PackageJson };
 
-export type PinDependenciesInput = PinDependenciesPackage & NpmDependenciesInput & YarnDependenciesInput;
+export type PinDependenciesInput = PinDependenciesPackage &
+  NpmDependenciesInput &
+  YarnDependenciesInput &
+  PnpmDependenciesInput;
 
 export type PinDependenciesOutput = {
   packageJson: PackageJson;
@@ -119,6 +151,7 @@ type Options = {
 
 const packageLockFileName = 'package-lock.json' as const;
 const yarnLockFileName = 'yarn.lock' as const;
+const pnpmLockFileName = 'pnpm-lock.yaml' as const;
 const packageJsonFileName = 'package.json' as const;
 export const parsePackageJsonString = (raw: string): PackageJson => JSON.parse(raw);
 export const parsePackageLockString = (raw: string): PackageLock => JSON.parse(raw);
@@ -302,6 +335,114 @@ const yarnLockSchema: JSONSchemaType<YarnLock> = {
   },
 };
 
+// @ts-ignore
+const pnpmLockSchema: JSONSchemaType<PnpmLock> = {
+  type: 'object',
+  properties: {
+    lockfileVersion: {
+      oneOf: [
+        { type: 'number', enum: [5.4, 6.0] },
+        { type: 'string', enum: ['5.4', '6.0'] },
+      ],
+    },
+  },
+  required: ['lockfileVersion'],
+  oneOf: [
+    {
+      properties: {
+        lockfileVersion: { oneOf: [{ const: 5.4 }, { const: '5.4' }] },
+        importers: {
+          type: 'object',
+          patternProperties: {
+            '^.+$': {
+              type: 'object',
+              properties: {
+                dependencies: {
+                  type: 'object',
+                  patternProperties: {
+                    '^.*$': {
+                      type: 'string',
+                    },
+                  },
+                },
+                devDependencies: {
+                  type: 'object',
+                  patternProperties: {
+                    '^.*$': {
+                      type: 'string',
+                    },
+                  },
+                },
+                optionalDependencies: {
+                  type: 'object',
+                  patternProperties: {
+                    '^.*$': {
+                      type: 'string',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      required: ['importers'],
+    },
+    {
+      properties: {
+        lockfileVersion: { oneOf: [{ const: 6.0 }, { const: '6.0' }] },
+        importers: {
+          type: 'object',
+          patternProperties: {
+            '^.+$': {
+              type: 'object',
+              properties: {
+                dependencies: {
+                  type: 'object',
+                  patternProperties: {
+                    '^.*$': {
+                      type: 'object',
+                      properties: {
+                        version: { type: 'string' },
+                      },
+                      required: ['version'],
+                    },
+                  },
+                },
+                devDependencies: {
+                  type: 'object',
+                  patternProperties: {
+                    '^.*$': {
+                      type: 'object',
+                      properties: {
+                        version: { type: 'string' },
+                      },
+                      required: ['version'],
+                    },
+                  },
+                },
+                optionalDependencies: {
+                  type: 'object',
+                  patternProperties: {
+                    '^.*$': {
+                      type: 'object',
+                      properties: {
+                        version: { type: 'string' },
+                      },
+                      required: ['version'],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      required: ['importers'],
+    },
+  ],
+};
+
 const createOutputTable = (colWidths: number[]): Table => {
   return new Table({
     style: {
@@ -403,6 +544,13 @@ export const validatePackageJson = (ctx: Pick<PinDependenciesInput, 'packageJson
     schema: packageJsonSchema,
   });
 
+export const validatePnpmLock = (ctx: Pick<PnpmDependenciesInput, 'pnpmLockFile'>): boolean =>
+  validateObj({
+    fileName: pnpmLockFileName,
+    obj: ctx.pnpmLockFile!.content,
+    schema: pnpmLockSchema,
+  });
+
 type ResolveDependencyKey = ({ name, version }: { name: string; version: string }) => string;
 type DependencyVersionResolver = {
   lockedDependencies: LockDependencies<VersionedDependency | ResolvedDependency>;
@@ -452,35 +600,100 @@ const yarnResolver = ({ yarnLockFile }: { yarnLockFile: LockFile }): DependencyV
   };
 };
 
-export const pinDependencies = (ctx: PinDependenciesInput): PinDependenciesOutput => {
-  let resolver: DependencyVersionResolver;
-  const isLockFileDefined = (lockFile: LockFile | undefined): lockFile is LockFile =>
-    typeof lockFile !== 'undefined' && lockFile !== undefined;
+const pnpmResolver = ({ pnpmLockFile }: { pnpmLockFile: LockFile<PnpmLock> }): DependencyVersionResolver => {
+  let lockedDependencies: LockDependencies<VersionedDependency> = {};
+  if (pnpmLockFile.content.lockfileVersion === 6.0 || pnpmLockFile.content.lockfileVersion === '6.0') {
+    const { dependencies, devDependencies, optionalDependencies } = pnpmLockFile.content.importers['.'];
+    lockedDependencies = {
+      ...dependencies,
+      ...devDependencies,
+      ...optionalDependencies,
+    };
+  } else if (pnpmLockFile.content.lockfileVersion === 5.4 || pnpmLockFile.content.lockfileVersion === '5.4') {
+    const { dependencies, devDependencies, optionalDependencies } = pnpmLockFile.content.importers['.'];
+    const transformDependencies = (dependencies?: Record<string, string>) => {
+      if (!dependencies) {
+        return {};
+      }
 
-  if (
-    isLockFileDefined(ctx.packageLockFile) &&
-    typeof ctx.packageLockFile.mtime === 'undefined' &&
-    isLockFileDefined(ctx.yarnLockFile) &&
-    typeof ctx.yarnLockFile.mtime === 'undefined'
-  ) {
-    throw new Error(`Unable to decide which lock file to use.`);
-  } else if (
-    isLockFileDefined(ctx.packageLockFile) &&
-    typeof ctx.packageLockFile.mtime !== 'undefined' &&
-    isLockFileDefined(ctx.yarnLockFile) &&
-    typeof ctx.yarnLockFile.mtime !== 'undefined'
-  ) {
-    resolver =
-      ctx.packageLockFile.mtime.getTime() > ctx.yarnLockFile.mtime.getTime()
-        ? npmResolver(ctx)
-        : yarnResolver({ yarnLockFile: ctx.yarnLockFile });
-  } else if (isLockFileDefined(ctx.packageLockFile)) {
-    resolver = npmResolver(ctx);
-  } else if (isLockFileDefined(ctx.yarnLockFile)) {
-    resolver = yarnResolver({ yarnLockFile: ctx.yarnLockFile });
-  } else {
+      return Object.keys(dependencies).reduce((acc: Record<string, VersionedDependency>, key) => {
+        acc[key] = { version: dependencies[key] };
+        return acc;
+      }, {});
+    };
+
+    lockedDependencies = {
+      ...transformDependencies(dependencies),
+      ...transformDependencies(devDependencies),
+      ...transformDependencies(optionalDependencies),
+    };
+  }
+
+  return {
+    lockedDependencies,
+    resolveDependencyKey: ({ name }) => {
+      return name;
+    },
+  };
+};
+
+const isLockFileDefined = (lockFile: LockFile | undefined): lockFile is LockFile =>
+  typeof lockFile !== 'undefined' && lockFile !== undefined;
+
+export const getContextKey = (lockFiles: Record<ContextKey, LockFile | undefined>): ContextKey | never => {
+  const definedLockFiles = Object.entries(lockFiles).filter(([, lockfile]) => isLockFileDefined(lockfile)) as [
+    ContextKey,
+    LockFile,
+  ][];
+  if (definedLockFiles.length === 0) {
     throw new Error(`Lock file is missing.`);
   }
+
+  if (definedLockFiles.length === 1) {
+    return definedLockFiles[0][0];
+  }
+
+  const timedLockFiles = definedLockFiles.filter(([, lockfile]) => lockfile.mtime) as [
+    ContextKey,
+    {
+      content: any;
+      mtime: Date;
+    },
+  ][];
+  if (timedLockFiles.length === 0) {
+    throw new Error(`Unable to decide which lock file to use.`);
+  }
+
+  if (timedLockFiles.length === 1) {
+    return timedLockFiles[0][0];
+  }
+
+  const mostRecentEntry = timedLockFiles.reduce((mostRecent, current) => {
+    if (current[1].mtime > mostRecent[1].mtime) {
+      return current;
+    }
+
+    return mostRecent;
+  });
+
+  return mostRecentEntry[0];
+};
+
+const resolverPerContextKey: Record<ContextKey, (payload: any) => DependencyVersionResolver> = {
+  packageLockFile: npmResolver,
+  yarnLockFile: yarnResolver,
+  pnpmLockFile: pnpmResolver,
+};
+
+export const pinDependencies = (ctx: PinDependenciesInput): PinDependenciesOutput => {
+  const lockFiles: Record<ContextKey, LockFile | undefined> = {
+    packageLockFile: ctx.packageLockFile,
+    yarnLockFile: ctx.yarnLockFile,
+    pnpmLockFile: ctx.pnpmLockFile,
+  };
+
+  const contextKey = getContextKey(lockFiles);
+  let resolver: DependencyVersionResolver = resolverPerContextKey[contextKey]({ [contextKey]: ctx[contextKey] });
 
   let packageJson: PackageJson = ctx.packageJson;
   const versionsToPin: VersionToPin[] = [];
@@ -571,41 +784,52 @@ export const pinDependenciesFromString = (ctx: PinDependenciesFromString): PinDe
   }
 };
 
+type ContextKey = 'packageLockFile' | 'yarnLockFile' | 'pnpmLockFile';
 type LockFileConfiguration = {
   fileName: string;
   filePath: string;
   parse: (raw: string) => any;
-  contextKey: 'packageLockFile' | 'yarnLockFile';
+  contextKey: ContextKey;
 };
 
 type FetchedLockFile = {
   config: LockFileConfiguration;
-  content: any;
-  mtime: Date | undefined;
-};
+} & LockFile;
 
 const lockFileConfigurations: LockFileConfiguration[] = [
   {
     fileName: packageLockFileName,
     filePath: join(process.cwd(), packageLockFileName),
-    parse: parsePackageLockString,
+    parse: (path: string) =>
+      fs
+        .readFile(path, 'utf8')
+        .then(raw => parsePackageLockString(raw))
+        .catch(() => undefined),
     contextKey: 'packageLockFile',
   },
   {
     fileName: yarnLockFileName,
     filePath: join(process.cwd(), yarnLockFileName),
-    parse: parseYarnLockString,
+    parse: (path: string) =>
+      fs
+        .readFile(path, 'utf8')
+        .then(raw => parseYarnLockString(raw))
+        .catch(() => undefined),
     contextKey: 'yarnLockFile',
+  },
+  {
+    fileName: pnpmLockFileName,
+    filePath: join(process.cwd(), pnpmLockFileName),
+    parse: (path: string) =>
+      readWantedLockfile(path.replace(pnpmLockFileName, ''), { ignoreIncompatible: false }).catch(() => undefined),
+    contextKey: 'pnpmLockFile',
   },
 ];
 
-const resolveLockFileContent = ({ path, config }: { path: string; config: LockFileConfiguration }) =>
+const resolveLockFileContent = ({ path, config }: { path: string; config: any }) =>
   Promise.all([
     config,
-    fs
-      .readFile(path, 'utf8')
-      .then(raw => config.parse(raw))
-      .catch(() => undefined),
+    config.parse(path),
     fs
       .stat(path)
       .then(payload => payload.mtime)
@@ -646,6 +870,7 @@ const readLockFile = async ({ ctx }: { ctx: PinDependenciesContext }): Promise<P
 
   if (fetchedLockFiles.some(fetchedLockFile => typeof fetchedLockFile.content !== 'undefined')) {
     fetchedLockFiles.forEach(fetchedLockFile => {
+      // @ts-expect-error O_o
       ctx[fetchedLockFile.config.contextKey] = { content: fetchedLockFile.content, mtime: fetchedLockFile.mtime };
     });
 
@@ -670,6 +895,7 @@ const readLockFile = async ({ ctx }: { ctx: PinDependenciesContext }): Promise<P
     .filter(filterLockFileWithUndefinedContent);
 
   findUpLockFiles.forEach(findUpLockFile => {
+    // @ts-expect-error O_o
     ctx[findUpLockFile.config.contextKey] = { content: findUpLockFile.content, mtime: findUpLockFile.mtime };
   });
 
@@ -724,6 +950,13 @@ const pinDependenciesValidateTasks = ({
         skip: ctx => typeof ctx.yarnLockFile === 'undefined',
         task: (ctx: PinDependenciesContext) => {
           validateYarnLock(ctx);
+        },
+      },
+      {
+        title: 'Validating pnpm-lock.yaml...',
+        skip: ctx => typeof ctx.pnpmLockFile === 'undefined',
+        task: (ctx: PinDependenciesContext) => {
+          validatePnpmLock(ctx);
         },
       },
       {
