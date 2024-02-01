@@ -8,6 +8,7 @@ import chalk from 'chalk';
 import Table from 'cli-table';
 import type { Debugger } from 'debug';
 import Debug from 'debug';
+import detectIndent from 'detect-indent';
 import { findUpMultiple, pathExists } from 'find-up';
 import type {
   ListrBaseClassOptions,
@@ -111,7 +112,7 @@ type PnpmDependenciesInput = {
   pnpmLockFile?: LockFile<PnpmLock> | undefined;
 };
 
-type PinDependenciesPackage = { packageJson: PackageJson };
+type PinDependenciesPackage = { packageJson: PackageJson; packageJsonIndent: string };
 
 export type PinDependenciesInput = PinDependenciesPackage &
   NpmDependenciesInput &
@@ -775,6 +776,7 @@ export const pinDependenciesFromString = (ctx: PinDependenciesFromString): PinDe
   if ('packageLockString' in ctx) {
     return pinDependencies({
       packageJson: parsePackageJsonString(ctx.packageJsonString),
+      packageJsonIndent: detectIndent(ctx.packageJsonString).indent,
       packageLockFile: {
         content: parsePackageLockString(ctx.packageLockString),
       },
@@ -783,6 +785,7 @@ export const pinDependenciesFromString = (ctx: PinDependenciesFromString): PinDe
   } else {
     return pinDependencies({
       packageJson: JSON.parse(ctx.packageJsonString),
+      packageJsonIndent: detectIndent(ctx.packageJsonString).indent,
       packageLockFile: undefined,
       yarnLockFile: {
         content: parseYarnLockString(ctx.yarnLockString),
@@ -931,9 +934,9 @@ const pinDependenciesReadFileTasks = ({
       {
         title: 'Reading package.json...',
         task: async (ctx: PinDependenciesContext) => {
-          ctx.packageJson = await fs
-            .readFile(options.packageJsonPath, 'utf8')
-            .then<PackageJson>(raw => parsePackageJsonString(raw));
+          const packageJsonString = await fs.readFile(options.packageJsonPath, 'utf8');
+          ctx.packageJson = parsePackageJsonString(packageJsonString);
+          ctx.packageJsonIndent = detectIndent(packageJsonString).indent;
         },
       },
     ],
@@ -1043,9 +1046,8 @@ const pinDependenciesTasks = ({
     {
       title: 'Updating package.json...',
       skip: () => (!options.update ? 'Update is disabled by default.' : !options.update),
-      task: (ctx: PinDependenciesContext) => {
-        return fs.writeFile(options.packageJsonPath, JSON.stringify(ctx.packageJson, null, 2) + '\n');
-      },
+      task: async (ctx: PinDependenciesContext) =>
+        fs.writeFile(options.packageJsonPath, JSON.stringify(ctx.packageJson, null, ctx.packageJsonIndent) + '\n'),
     },
     {
       title: 'Enabling save-exact using .npmrc...',
