@@ -2,5 +2,6 @@
   "$schema": "https://unpkg.com/knip@2/schema.json",
   "entry": ["bin/npd.ts"],
   "project": ["lib/**/*.ts"],
-  "exclude": ["exports", "types"]
+  "exclude": ["exports", "types"],
+  "ignoreDependencies": ["@commitlint/cli"]
 }
