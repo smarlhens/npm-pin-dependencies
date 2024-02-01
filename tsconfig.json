@@ -36,7 +36,7 @@
     "allowUnreachableCode": false,
     "exactOptionalPropertyTypes": true,
     "verbatimModuleSyntax": true,
-    "checkJs": true
+    "checkJs": true,
   },
-  "include": ["bin/npd.ts"]
+  "include": ["bin/npd.ts"],
 }
