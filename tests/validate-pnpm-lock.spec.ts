@@ -31,25 +31,11 @@ describe('validate pnpm lock', () => {
     expect(validatePnpmLock(params)).toEqual(true);
   });
 
-  it('should validate lock with 6.0 as number', async () => {
+  it.each([6.0, '6.0', 9.0, '9.0'] as const)('should validate lock with %s as number', async lockfileVersion => {
     const params = {
       pnpmLockFile: {
         content: {
-          lockfileVersion: 6.0 as const,
-          importers: {
-            '.': {},
-          },
-        },
-      },
-    };
-    expect(validatePnpmLock(params)).toEqual(true);
-  });
-
-  it('should validate lock with 6.0 as string', async () => {
-    const params = {
-      pnpmLockFile: {
-        content: {
-          lockfileVersion: '6.0' as const,
+          lockfileVersion,
           importers: {
             '.': {},
           },
