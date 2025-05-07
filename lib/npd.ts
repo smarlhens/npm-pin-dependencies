@@ -78,7 +78,7 @@ type PnpmLock =
       >;
     }
   | {
-      lockfileVersion: 6.0 | '6.0';
+      lockfileVersion: 6.0 | '6.0' | 9.0 | '9.0';
       importers: Record<
         string,
         {
@@ -347,8 +347,8 @@ const pnpmLockSchema: JSONSchemaType<PnpmLock> = {
   properties: {
     lockfileVersion: {
       oneOf: [
-        { type: 'number', enum: [5.4, 6.0] },
-        { type: 'string', enum: ['5.4', '6.0'] },
+        { type: 'number', enum: [5.4, 6.0, 9.0] },
+        { type: 'string', enum: ['5.4', '6.0', '9.0'] },
       ],
     },
   },
@@ -396,7 +396,7 @@ const pnpmLockSchema: JSONSchemaType<PnpmLock> = {
     },
     {
       properties: {
-        lockfileVersion: { oneOf: [{ const: 6.0 }, { const: '6.0' }] },
+        lockfileVersion: { oneOf: [{ const: 6.0 }, { const: '6.0' }, { const: 9.0 }, { const: '9.0' }] },
         importers: {
           type: 'object',
           patternProperties: {
