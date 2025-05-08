@@ -37,12 +37,8 @@ jobs:
       - name: Test
         run: npm run test:ci
       - name: Release
-        id: release
-        uses: google-github-actions/release-please-action@v4
+        uses: googleapis/release-please-action@v4
         with:
           release-type: node
-          package-name: '@smarlhens/npm-pin-dependencies'
-          changelog-path: CHANGELOG.md
-          command: github-release
+          skip-github-pull-request: true
           token: ${{ secrets.PAT }}
-          changelog-types: '[{"type":"build","section":"Miscellaneous","hidden":false},{"type":"chore","section":"Chores","hidden":false},{"type":"ci","section":"Miscellaneous","hidden":false},{"type":"docs","section":"Documentation","hidden":false},{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"refactor","section":"Miscellaneous","hidden":false},{"type":"style","section":"Miscellaneous","hidden":false},{"type":"test","section":"Miscellaneous","hidden":false}]'
