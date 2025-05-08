@@ -1,7 +1,5 @@
 {
-  "$schema": "https://unpkg.com/knip@2/schema.json",
+  "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": ["bin/npd.ts"],
-  "project": ["lib/**/*.ts"],
-  "exclude": ["exports", "types"],
-  "ignoreDependencies": ["@commitlint/cli"]
+  "project": ["lib/**/*.ts"]
 }
