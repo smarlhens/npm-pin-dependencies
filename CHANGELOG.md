@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.9.0...v0.10.0) (2025-05-08)
+
+
+### Features
+
+* add support for pnpm v9 ([85dd917](https://github.com/smarlhens/npm-pin-dependencies/commit/85dd91755c0deeb97889aaba5e2e6ad1fadd9466))
+
 ## [0.9.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.8.3...v0.9.0) (2024-02-01)
 
 
