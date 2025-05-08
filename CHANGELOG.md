@@ -1,5 +1,42 @@
 # Changelog
 
+## [0.10.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.9.0...v0.10.0) (2025-05-08)
+
+
+### Chores
+
+* add editorconfig ([207ddc8](https://github.com/smarlhens/npm-pin-dependencies/commit/207ddc8837d607ec40454c3edc06801866b6dbcd))
+* add git attributes ([72cfb61](https://github.com/smarlhens/npm-pin-dependencies/commit/72cfb6185a2df0e42d2cbb97003b5d24cffa76c8))
+* bootstrap releases for root package ([9ce76a1](https://github.com/smarlhens/npm-pin-dependencies/commit/9ce76a1ee25a12c910971478a598f99aea1b4048))
+* bump major deps & minimal node version to v18.13.0 ([efd5b3a](https://github.com/smarlhens/npm-pin-dependencies/commit/efd5b3a486c7d101c81d2c87cb45d75c14d6e1ed))
+* ci uses release-please config ([63406d8](https://github.com/smarlhens/npm-pin-dependencies/commit/63406d826dea0b39502856cacdfc0f9a2b1d5501))
+* **ci:** runs-on ubuntu-24.04 ([2ca9bf7](https://github.com/smarlhens/npm-pin-dependencies/commit/2ca9bf7ce464c464eb0a5588dfcf28b56f8d7320))
+* rename pre-commit npm script & do not run build on pre-commit ([300c492](https://github.com/smarlhens/npm-pin-dependencies/commit/300c492017e3cf86787f384c7dc89131e81d077c))
+* run build before test ([945999f](https://github.com/smarlhens/npm-pin-dependencies/commit/945999fd8d9203a9a90f8db3600b4bf1cd10de74))
+* support node v22 ([1ec0b5d](https://github.com/smarlhens/npm-pin-dependencies/commit/1ec0b5df07b42ea8f6f48addd897d6be862eac9f))
+* update license from MIT to BlueOak-1.0.0 ([baf569d](https://github.com/smarlhens/npm-pin-dependencies/commit/baf569d4753ac9d79408015f07c9d26b8cee209a))
+* update ncu config ([e1c36b0](https://github.com/smarlhens/npm-pin-dependencies/commit/e1c36b00a8e65a998b04af6115135fbc5eca4ab3))
+* update patch & minor deps ([bf6935d](https://github.com/smarlhens/npm-pin-dependencies/commit/bf6935d49119d595ed89fb022db8b232e544587f))
+* update release-please ([51cb3ac](https://github.com/smarlhens/npm-pin-dependencies/commit/51cb3aca2cf4e9071ca04f8a56b3fba1d7c2844a))
+* update release-please config ([28c2437](https://github.com/smarlhens/npm-pin-dependencies/commit/28c2437baa6c83c6834adc35223d5b0ad7343722))
+* update renovate config ([67dea7b](https://github.com/smarlhens/npm-pin-dependencies/commit/67dea7b6cc5123a2cbd705a8b079224a9d407c34))
+
+
+### Documentation
+
+* **README:** update headline ([c902b5d](https://github.com/smarlhens/npm-pin-dependencies/commit/c902b5d3cb56e92035146e474a255682213c4199))
+
+
+### Features
+
+* add support for pnpm v9 ([85dd917](https://github.com/smarlhens/npm-pin-dependencies/commit/85dd91755c0deeb97889aaba5e2e6ad1fadd9466))
+
+
+### Tests
+
+* add missing package json indent required param ([932fc77](https://github.com/smarlhens/npm-pin-dependencies/commit/932fc77d068bc4a9123ca6da29e5b60bae8e28a6))
+* add more pnpm tests ([f6f5081](https://github.com/smarlhens/npm-pin-dependencies/commit/f6f5081b5b1b6de8825a81ab59ff4e6198136953))
+
 ## [0.9.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.8.3...v0.9.0) (2024-02-01)
 
 
