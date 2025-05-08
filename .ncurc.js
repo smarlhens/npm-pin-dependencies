@@ -15,10 +15,6 @@ module.exports = {
        * breaking changes in v9
        */
       execa: 'minor',
-      /**
-       * breaking changes in v5
-       */
-      knip: 'minor',
     };
 
     const keys = Object.keys(targets);

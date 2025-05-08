@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  NODE_VERSION: '18.13.0'
+  NODE_VERSION: '18.18.0'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}

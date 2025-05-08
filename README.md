@@ -25,7 +25,7 @@
 
 ## Prerequisites
 
-- [Node.JS](https://nodejs.org/en/download/) **version ^18.13.0 || ^20.0.0 || ^22.0.0**
+- [Node.JS](https://nodejs.org/en/download/) **version ^18.18.0 || ^20.0.0 || ^22.0.0**
 
 ---
 
