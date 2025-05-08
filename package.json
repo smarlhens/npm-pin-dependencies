@@ -59,6 +59,7 @@
     "prepare": "husky",
     "prettier:check": "prettier --check ./**/*.{ts,json,yml,md}",
     "prettier:write": "prettier --write ./**/*.{ts,json,yml,md}",
+    "pretest": "npm run build",
     "test": "vitest run",
     "test:ci": "npm run test:coverage",
     "test:coverage": "npm run test -- --coverage",

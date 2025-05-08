@@ -32,9 +32,7 @@ jobs:
         run: npm run prettier:check
       - name: Run knip
         run: npx knip
-      - name: Build
-        run: npm run build
-      - name: Test
+      - name: Build & Test
         run: npm run test:ci
       - name: Release
         uses: googleapis/release-please-action@v4
