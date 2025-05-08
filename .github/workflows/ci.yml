@@ -39,13 +39,14 @@ jobs:
         run: npm run build
       - name: Test
         run: npm run test:ci
+      - name: Set variables
+        run: |
+          echo "skip_github_pull_request=${{ startsWith(github.event.head_commit.message, 'chore(main): release') }}" >> $GITHUB_ENV
+          echo "skip_github_release=${{ !startsWith(github.event.head_commit.message, 'chore(main): release') }}" >> $GITHUB_ENV
       - name: Prepare release
-        uses: google-github-actions/release-please-action@v4
+        uses: googleapis/release-please-action@v4
         with:
           release-type: node
-          package-name: '@smarlhens/npm-pin-dependencies'
-          changelog-path: CHANGELOG.md
-          command: |
-            ${{ startsWith(github.event.head_commit.message, 'chore(main): release') && 'github-release' || 'release-pr' }}
+          skip-github-pull-request: ${{ env.skip_github_pull_request }}
+          skip-github-release: ${{ env.skip_github_release }}
           token: ${{ secrets.PAT }}
-          changelog-types: '[{"type":"build","section":"Miscellaneous","hidden":false},{"type":"chore","section":"Chores","hidden":false},{"type":"ci","section":"Miscellaneous","hidden":false},{"type":"docs","section":"Documentation","hidden":false},{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"refactor","section":"Miscellaneous","hidden":false},{"type":"style","section":"Miscellaneous","hidden":false},{"type":"test","section":"Miscellaneous","hidden":false}]'
