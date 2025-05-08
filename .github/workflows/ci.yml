@@ -44,7 +44,8 @@ jobs:
       - name: Prepare release
         uses: googleapis/release-please-action@v4
         with:
-          release-type: node
+          token: ${{ secrets.PAT }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
           skip-github-pull-request: ${{ env.skip_github_pull_request }}
           skip-github-release: ${{ env.skip_github_release }}
-          token: ${{ secrets.PAT }}
