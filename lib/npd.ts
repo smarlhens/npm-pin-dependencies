@@ -1,4 +1,4 @@
-import { readWantedLockfile } from '@pnpm/lockfile-file';
+import { readWantedLockfile } from '@pnpm/lockfile.fs';
 import type { LockFileObject } from '@yarnpkg/lockfile';
 import * as lockfile from '@yarnpkg/lockfile';
 import { parseSyml } from '@yarnpkg/parsers';
