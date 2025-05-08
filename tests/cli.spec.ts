@@ -81,4 +81,34 @@ describe('run cli over examples', () => {
     expect(stdout).toContain('fake-package-2  ^2.0.0  →  2.0.1');
     expect(stdout).toContain('fake-package-3  ^3.0.0  →  3.1.9');
   });
+
+  it('should handle versions to pin with pnpm-lock-v5-4', async () => {
+    const { stdout } = await execa(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
+      cwd: join(__dirname, '..', 'examples', 'pnpm-lock-v5-4'),
+    });
+
+    expect(stdout).toContain('fake-package-1  ^1.0.0  →  1.0.3');
+    expect(stdout).toContain('fake-package-2  ^2.0.0  →  2.0.1');
+    expect(stdout).toContain('fake-package-3  ^3.0.0  →  3.1.9');
+  });
+
+  it('should handle versions to pin with pnpm-lock-v6', async () => {
+    const { stdout } = await execa(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
+      cwd: join(__dirname, '..', 'examples', 'pnpm-lock-v6'),
+    });
+
+    expect(stdout).toContain('fake-package-1  ^1.0.0  →  1.0.3');
+    expect(stdout).toContain('fake-package-2  ^2.0.0  →  2.0.1');
+    expect(stdout).toContain('fake-package-3  ^3.0.0  →  3.1.9');
+  });
+
+  it('should handle versions to pin with pnpm-lock-v9', async () => {
+    const { stdout } = await execa(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
+      cwd: join(__dirname, '..', 'examples', 'pnpm-lock-v9'),
+    });
+
+    expect(stdout).toContain('fake-package-1  ^1.0.0  →  1.0.3');
+    expect(stdout).toContain('fake-package-2  ^2.0.0  →  2.0.1');
+    expect(stdout).toContain('fake-package-3  ^3.0.0  →  3.1.9');
+  });
 });
