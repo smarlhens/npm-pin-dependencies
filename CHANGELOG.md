@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.10.1](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.10.0...v0.10.1) (2025-05-08)
+
+
+### Chores
+
+* update execa to v9 & minimal node version to v18.19.0 ([517fd08](https://github.com/smarlhens/npm-pin-dependencies/commit/517fd088518c125269e377a816233b433aca9dde))
+* update knip to v5 & minimal node version to v18.18.0 ([12dc73e](https://github.com/smarlhens/npm-pin-dependencies/commit/12dc73edce65c52dc9165aa93f57e9f970cb13f6))
+* update tsup config extension & add prettier config json schema ([3ceeb39](https://github.com/smarlhens/npm-pin-dependencies/commit/3ceeb392185243df5f499d0a6a5cf48c2fd1f7f4))
+
 ## [0.10.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.9.0...v0.10.0) (2025-05-08)
 
 
