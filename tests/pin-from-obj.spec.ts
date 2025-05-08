@@ -12,6 +12,7 @@ describe('pin from obj', () => {
           'fake-package-3': '3.x',
         },
       },
+      packageJsonIndent: '  ',
       packageLockFile: {
         content: {
           lockfileVersion: 3,
@@ -80,6 +81,7 @@ describe('pin from obj', () => {
           'fake-package-3': '3.x',
         },
       },
+      packageJsonIndent: '  ',
       packageLockFile: {
         content: {
           lockfileVersion: 3,
@@ -131,6 +133,7 @@ describe('pin from obj', () => {
           'fake-package-3': '3.x',
         },
       },
+      packageJsonIndent: '  ',
       packageLockFile: {
         content: {
           lockfileVersion: 3,
@@ -197,6 +200,7 @@ describe('pin from obj', () => {
           'fake-package-3': '3.x',
         },
       },
+      packageJsonIndent: '  ',
       packageLockFile: {
         content: {
           lockfileVersion: 3,
@@ -264,6 +268,7 @@ describe('pin from obj', () => {
           'fake-package-3': '3.x',
         },
       },
+      packageJsonIndent: '  ',
     };
     expect(() => pinDependencies(params)).toThrowError(/Lock file is missing./);
   });
@@ -275,6 +280,7 @@ describe('pin from obj', () => {
           'fake-package-1': '1.0.0',
         },
       },
+      packageJsonIndent: '  ',
       packageLockFile: {
         content: {
           lockfileVersion: 3,
@@ -299,6 +305,7 @@ describe('pin from obj', () => {
           'fake-package-1': '1.0.0',
         },
       },
+      packageJsonIndent: '  ',
       packageLockFile: {
         content: {
           lockfileVersion: 3,
@@ -323,6 +330,7 @@ describe('pin from obj', () => {
           'fake-package-1': 'file:../vendor/foo.tgz',
         },
       },
+      packageJsonIndent: '  ',
       packageLockFile: {
         content: {
           lockfileVersion: 3,
@@ -351,6 +359,7 @@ describe('pin from obj', () => {
           'fake-package-1': '^1.0.0',
         },
       },
+      packageJsonIndent: '  ',
       pnpmLockFile: {
         content: {
           lockfileVersion: 5.4,
@@ -388,6 +397,7 @@ describe('pin from obj', () => {
           'fake-package-1': '^1.0.0',
         },
       },
+      packageJsonIndent: '  ',
       pnpmLockFile: {
         content: {
           lockfileVersion: 6.0,
