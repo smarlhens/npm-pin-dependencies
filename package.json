@@ -55,7 +55,7 @@
     "dev": "node --experimental-specifier-resolution=node --loader ts-node/esm ./bin/npd.ts",
     "lint": "npm run prettier:check",
     "lint-staged": "lint-staged",
-    "precommit": "npm run lint-staged && npm run build",
+    "pre-commit": "npm run lint-staged",
     "prepare": "husky",
     "prettier:check": "prettier --check ./**/*.{ts,json,yml,md}",
     "prettier:write": "prettier --write ./**/*.{ts,json,yml,md}",
