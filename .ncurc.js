@@ -11,10 +11,6 @@ module.exports = {
        * v6 requires node >=20, keeping v5.x
        */
       rimraf: 'minor',
-      /**
-       * breaking changes in v9
-       */
-      execa: 'minor',
     };
 
     const keys = Object.keys(targets);
