@@ -404,9 +404,7 @@ describe('pin from obj', () => {
           importers: {
             '.': {
               dependencies: {
-                'fake-package-1': {
-                  version: '1.2.3',
-                },
+                'fake-package-1': '1.2.3',
               },
             },
           },

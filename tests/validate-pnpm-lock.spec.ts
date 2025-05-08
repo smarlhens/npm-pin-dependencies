@@ -3,47 +3,21 @@ import { describe, expect, it } from 'vitest';
 import { validatePnpmLock } from '../lib/npd.js';
 
 describe('validate pnpm lock', () => {
-  it('should validate lock with 5.4 as number', async () => {
-    const params = {
-      pnpmLockFile: {
-        content: {
-          lockfileVersion: 5.4 as const,
-          importers: {
-            '.': {},
+  for (const lockfileVersion of [5.4, '5.4', 6.0, '6.0', 9.0, '9.0'] as const) {
+    it(`should validate lock with ${lockfileVersion} as ${typeof lockfileVersion}`, async () => {
+      const params = {
+        pnpmLockFile: {
+          content: {
+            lockfileVersion,
+            importers: {
+              '.': {},
+            },
           },
         },
-      },
-    };
-    expect(validatePnpmLock(params)).toEqual(true);
-  });
-
-  it('should validate lock with 5.4 as string', async () => {
-    const params = {
-      pnpmLockFile: {
-        content: {
-          lockfileVersion: '5.4' as const,
-          importers: {
-            '.': {},
-          },
-        },
-      },
-    };
-    expect(validatePnpmLock(params)).toEqual(true);
-  });
-
-  it.each([6.0, '6.0', 9.0, '9.0'] as const)('should validate lock with %s as number', async lockfileVersion => {
-    const params = {
-      pnpmLockFile: {
-        content: {
-          lockfileVersion,
-          importers: {
-            '.': {},
-          },
-        },
-      },
-    };
-    expect(validatePnpmLock(params)).toEqual(true);
-  });
+      };
+      expect(validatePnpmLock(params)).toEqual(true);
+    });
+  }
 
   it('should invalidate lock w/o importers', async () => {
     const params = {
@@ -57,7 +31,7 @@ describe('validate pnpm lock', () => {
     expect(() => validatePnpmLock(params)).toThrowError(/must have required property 'importers'/);
   });
 
-  it('should invalidate lock 6.0 w/ dependencies as string', async () => {
+  it('should invalidate lock 6.0 w/ dependencies as object', async () => {
     const params = {
       pnpmLockFile: {
         content: {
@@ -65,7 +39,9 @@ describe('validate pnpm lock', () => {
           importers: {
             '.': {
               dependencies: {
-                'fake-package-1': '1.2.3',
+                'fake-package-1': {
+                  version: '1.2.3',
+                },
               },
             },
           },
@@ -74,7 +50,7 @@ describe('validate pnpm lock', () => {
     };
     // @ts-ignore
     expect(() => validatePnpmLock(params)).toThrowError(
-      /data\/importers\/\.\/dependencies\/fake-package-1 must be object/,
+      /data\/importers\/\.\/dependencies\/fake-package-1 must be string/,
     );
   });
 

@@ -65,29 +65,17 @@ type YarnLock = {
   object: LockFileObject;
 };
 
-type PnpmLock =
-  | {
-      lockfileVersion: 5.4 | '5.4';
-      importers: Record<
-        string,
-        {
-          dependencies?: Record<string, string>;
-          optionalDependencies?: Record<string, string>;
-          devDependencies?: Record<string, string>;
-        }
-      >;
+type PnpmLock = {
+  lockfileVersion: 5.4 | '5.4' | 6.0 | '6.0' | 9.0 | '9.0';
+  importers: Record<
+    string,
+    {
+      dependencies?: Record<string, string>;
+      optionalDependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>;
     }
-  | {
-      lockfileVersion: 6.0 | '6.0' | 9.0 | '9.0';
-      importers: Record<
-        string,
-        {
-          dependencies?: Record<string, VersionedDependency>;
-          optionalDependencies?: Record<string, VersionedDependency>;
-          devDependencies?: Record<string, VersionedDependency>;
-        }
-      >;
-    };
+  >;
+};
 
 type VersionToPin = {
   dependency: string;
@@ -356,47 +344,9 @@ const pnpmLockSchema: JSONSchemaType<PnpmLock> = {
   oneOf: [
     {
       properties: {
-        lockfileVersion: { oneOf: [{ const: 5.4 }, { const: '5.4' }] },
-        importers: {
-          type: 'object',
-          patternProperties: {
-            '^.+$': {
-              type: 'object',
-              properties: {
-                dependencies: {
-                  type: 'object',
-                  patternProperties: {
-                    '^.*$': {
-                      type: 'string',
-                    },
-                  },
-                },
-                devDependencies: {
-                  type: 'object',
-                  patternProperties: {
-                    '^.*$': {
-                      type: 'string',
-                    },
-                  },
-                },
-                optionalDependencies: {
-                  type: 'object',
-                  patternProperties: {
-                    '^.*$': {
-                      type: 'string',
-                    },
-                  },
-                },
-              },
-            },
-          },
+        lockfileVersion: {
+          oneOf: [{ const: 5.4 }, { const: '5.4' }, { const: 6.0 }, { const: '6.0' }, { const: 9.0 }, { const: '9.0' }],
         },
-      },
-      required: ['importers'],
-    },
-    {
-      properties: {
-        lockfileVersion: { oneOf: [{ const: 6.0 }, { const: '6.0' }, { const: 9.0 }, { const: '9.0' }] },
         importers: {
           type: 'object',
           patternProperties: {
@@ -407,11 +357,7 @@ const pnpmLockSchema: JSONSchemaType<PnpmLock> = {
                   type: 'object',
                   patternProperties: {
                     '^.*$': {
-                      type: 'object',
-                      properties: {
-                        version: { type: 'string' },
-                      },
-                      required: ['version'],
+                      type: 'string',
                     },
                   },
                 },
@@ -419,11 +365,7 @@ const pnpmLockSchema: JSONSchemaType<PnpmLock> = {
                   type: 'object',
                   patternProperties: {
                     '^.*$': {
-                      type: 'object',
-                      properties: {
-                        version: { type: 'string' },
-                      },
-                      required: ['version'],
+                      type: 'string',
                     },
                   },
                 },
@@ -431,11 +373,7 @@ const pnpmLockSchema: JSONSchemaType<PnpmLock> = {
                   type: 'object',
                   patternProperties: {
                     '^.*$': {
-                      type: 'object',
-                      properties: {
-                        version: { type: 'string' },
-                      },
-                      required: ['version'],
+                      type: 'string',
                     },
                   },
                 },
@@ -607,33 +545,29 @@ const yarnResolver = ({ yarnLockFile }: { yarnLockFile: LockFile }): DependencyV
 };
 
 const pnpmResolver = ({ pnpmLockFile }: { pnpmLockFile: LockFile<PnpmLock> }): DependencyVersionResolver => {
-  let lockedDependencies: LockDependencies<VersionedDependency> = {};
-  if (pnpmLockFile.content.lockfileVersion === 6.0 || pnpmLockFile.content.lockfileVersion === '6.0') {
-    const { dependencies, devDependencies, optionalDependencies } = pnpmLockFile.content.importers['.'];
-    lockedDependencies = {
-      ...dependencies,
-      ...devDependencies,
-      ...optionalDependencies,
-    };
-  } else if (pnpmLockFile.content.lockfileVersion === 5.4 || pnpmLockFile.content.lockfileVersion === '5.4') {
-    const { dependencies, devDependencies, optionalDependencies } = pnpmLockFile.content.importers['.'];
-    const transformDependencies = (dependencies?: Record<string, string>) => {
-      if (!dependencies) {
-        return {};
-      }
+  /**
+   * TODO: support dedicated shrinkwrap
+   * see https://github.com/pnpm/spec/blob/master/lockfile/5.2.md
+   * see https://github.com/pnpm/spec/blob/master/lockfile/6.0.md
+   * see https://github.com/pnpm/spec/blob/master/lockfile/9.0.md
+   */
+  const { dependencies, devDependencies, optionalDependencies } = pnpmLockFile.content.importers['.'];
+  const transformDependencies = (dependencies?: Record<string, string>) => {
+    if (!dependencies) {
+      return {};
+    }
 
-      return Object.keys(dependencies).reduce((acc: Record<string, VersionedDependency>, key) => {
-        acc[key] = { version: dependencies[key] };
-        return acc;
-      }, {});
-    };
+    return Object.keys(dependencies).reduce((acc: Record<string, VersionedDependency>, key) => {
+      acc[key] = { version: dependencies[key] };
+      return acc;
+    }, {});
+  };
 
-    lockedDependencies = {
-      ...transformDependencies(dependencies),
-      ...transformDependencies(devDependencies),
-      ...transformDependencies(optionalDependencies),
-    };
-  }
+  const lockedDependencies: LockDependencies<VersionedDependency> = {
+    ...transformDependencies(dependencies),
+    ...transformDependencies(devDependencies),
+    ...transformDependencies(optionalDependencies),
+  };
 
   return {
     lockedDependencies,
