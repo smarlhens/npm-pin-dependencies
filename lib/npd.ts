@@ -5,8 +5,6 @@ import { parseSyml } from '@yarnpkg/parsers';
 import type { JSONSchemaType, Schema } from 'ajv';
 import Ajv from 'ajv';
 import Table from 'cli-table';
-import type { Debugger } from 'debug';
-import Debug from 'debug';
 import detectIndent from 'detect-indent';
 import { findUpMultiple, pathExists } from 'find-up';
 import type {
@@ -20,6 +18,7 @@ import type {
 import { Listr } from 'listr2';
 import fs from 'node:fs/promises';
 import { join, normalize } from 'node:path';
+import { createDebug, type Debugger, disable, enable } from 'obug';
 import pc from 'picocolors';
 import * as semver from 'semver';
 
@@ -159,9 +158,9 @@ export const parseYarnLockString = (raw: string): LockFileObject => {
   }
 };
 const debugNamespace: string = 'npd' as const;
-const debug: Debugger = Debug(debugNamespace);
-const namespaces = () => Debug.disable();
-const enableNamespaces = (namespaces: string): void => Debug.enable(namespaces);
+const debug: Debugger = createDebug(debugNamespace);
+const namespaces = () => disable();
+const enableNamespaces = (ns: string): void => enable(ns);
 
 const renderer = (
   { debug, quiet, verbose }: { debug?: boolean; quiet?: boolean; verbose?: boolean },
