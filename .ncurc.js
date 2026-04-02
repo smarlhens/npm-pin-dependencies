@@ -32,10 +32,10 @@ module.exports = {
        */
       'sort-package-json': 'minor',
       /**
-       * v4 requires node >=20, keeping v3.x
+       * v3.2+ has subdeps requiring node >=20 (vite@7), v4 requires node >=20
        */
-      vitest: 'minor',
-      '@vitest/coverage-v8': 'minor',
+      vitest: 'patch',
+      '@vitest/coverage-v8': 'patch',
       /**
        * v6 breaking changes, not sure supported by all deps
        */
