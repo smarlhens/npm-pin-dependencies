@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 120,
+  "arrowParens": "avoid",
+  "endOfLine": "lf",
+  "insertFinalNewline": true,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "overrides": [
+    {
+      "files": ["*.json"],
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ],
+  "sortImports": {
+    "newlinesBetween": true,
+    "groups": [["value-builtin", "value-external"], ["value-parent", "value-sibling", "value-index"], "type-import"]
+  },
+  "sortPackageJson": {
+    "sortScripts": true
+  },
+  "ignorePatterns": [".husky/", "dist/", "node_modules/", "CHANGELOG.md", "coverage/"]
+}
