@@ -12,15 +12,13 @@
   "packageRules": [
     {
       "enabled": false,
-      "groupName": "nodejs",
       "matchDatasources": ["npm"],
       "matchPackageNames": ["@types/node"],
       "matchUpdateTypes": ["major"]
     },
     {
       "enabled": false,
-      "groupName": "nodejs",
-      "matchDatasources": ["docker"],
+      "matchDatasources": ["node-version"],
       "matchPackageNames": ["node"],
       "matchUpdateTypes": ["major"]
     },
