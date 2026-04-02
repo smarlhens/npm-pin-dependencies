@@ -23,6 +23,12 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["node"],
       "matchUpdateTypes": ["major"]
+    },
+    {
+      "enabled": false,
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["listr2"],
+      "matchUpdateTypes": ["major"]
     }
   ]
 }
