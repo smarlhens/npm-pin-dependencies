@@ -4,7 +4,7 @@ module.exports = {
     const targets = {
       '@types/node': 'minor',
       /**
-       * v9 requires node >=20, v10 requires node >=22, keeping v8.x
+       * v10 requires node >=22, keeping v9.x
        */
       listr2: 'minor',
       /**
