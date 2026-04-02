@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.11.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.10.3...v0.11.0) (2026-04-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop node 18 support
+
+### Features
+
+* drop node 18 support ([d26ab4e](https://github.com/smarlhens/npm-pin-dependencies/commit/d26ab4efd9a4049348fc0e66be152b27a2709893))
+
 ## [0.10.3](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.10.2...v0.10.3) (2026-04-02)
 
 
