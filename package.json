@@ -82,8 +82,8 @@
     "yargs": "17.7.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "19.8.1",
-    "@commitlint/config-conventional": "19.8.1",
+    "@commitlint/cli": "20.5.0",
+    "@commitlint/config-conventional": "20.5.0",
     "@swc/core": "1.15.21",
     "@trivago/prettier-plugin-sort-imports": "5.2.2",
     "@types/cli-table": "0.3.4",
