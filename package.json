@@ -75,7 +75,7 @@
     "cli-table": "0.3.11",
     "detect-indent": "7.0.2",
     "empathic": "2.0.0",
-    "listr2": "8.3.3",
+    "listr2": "9.0.5",
     "obug": "2.1.1",
     "picocolors": "1.1.1",
     "semver": "7.7.4",
