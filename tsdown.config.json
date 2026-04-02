@@ -9,5 +9,7 @@
     "entry": "lib/npd.ts"
   },
   "format": ["cjs", "es"],
-  "clean": true
+  "clean": true,
+  "publint": true,
+  "attw": true
 }

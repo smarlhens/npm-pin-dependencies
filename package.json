@@ -41,10 +41,13 @@
   "type": "module",
   "main": "./dist/lib/npd.cjs",
   "module": "./dist/lib/npd.js",
-  "types": "./dist/npd.d.ts",
+  "types": "./dist/lib/npd.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/npd.d.ts",
+      "types": {
+        "require": "./dist/lib/npd.d.cts",
+        "import": "./dist/lib/npd.d.ts"
+      },
       "require": "./dist/lib/npd.cjs",
       "import": "./dist/lib/npd.js"
     }
@@ -80,6 +83,7 @@
     "yargs": "17.7.2"
   },
   "devDependencies": {
+    "@arethetypeswrong/core": "0.18.2",
     "@commitlint/cli": "20.5.0",
     "@commitlint/config-conventional": "20.5.0",
     "@types/cli-table": "0.3.4",
@@ -93,6 +97,7 @@
     "knip": "6.2.0",
     "lint-staged": "15.5.2",
     "oxfmt": "0.43.0",
+    "publint": "0.3.18",
     "tinyexec": "1.0.4",
     "tsdown": "0.21.7",
     "typescript": "5.9.3",
