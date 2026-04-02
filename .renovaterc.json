@@ -11,10 +11,18 @@
   "labels": ["dependencies"],
   "packageRules": [
     {
+      "enabled": false,
+      "groupName": "nodejs",
       "matchDatasources": ["npm"],
       "matchPackageNames": ["@types/node"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
+      "matchUpdateTypes": ["major"]
+    },
+    {
+      "enabled": false,
+      "groupName": "nodejs",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["node"],
+      "matchUpdateTypes": ["major"]
     }
   ]
 }
