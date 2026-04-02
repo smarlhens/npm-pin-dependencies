@@ -63,7 +63,8 @@
     "test": "vitest run",
     "test:ci": "npm run test:coverage",
     "test:coverage": "npm run test -- --coverage",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@pnpm/lockfile.fs": "1001.1.11",
