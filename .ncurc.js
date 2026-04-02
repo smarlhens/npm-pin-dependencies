@@ -12,9 +12,9 @@ module.exports = {
        */
       'find-up': 'minor',
       /**
-       * v6 requires node >=20, keeping v5.x
+       * v5.54+ has subdeps requiring node >=20 (walk-up-path@4), v6 requires node >=20
        */
-      knip: 'minor',
+      knip: 'patch',
       /**
        * v16 requires node >=20, keeping v15.x
        */
