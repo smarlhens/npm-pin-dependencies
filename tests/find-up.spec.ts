@@ -1,69 +1,57 @@
-import { findUpMultiple, pathExists } from 'find-up';
+import { file as findFile } from 'empathic/find';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 describe('find-up behavior (non-regression)', () => {
-  describe('pathExists', () => {
-    it('should return true for existing file', async () => {
-      const result = await pathExists(join(__dirname, '..', 'package.json'));
+  describe('pathExists (existsSync)', () => {
+    it('should return true for existing file', () => {
+      const result = existsSync(join(__dirname, '..', 'package.json'));
       expect(result).toEqual(true);
     });
 
-    it('should return false for non-existing file', async () => {
-      const result = await pathExists(join(__dirname, '..', 'non-existing-file.json'));
+    it('should return false for non-existing file', () => {
+      const result = existsSync(join(__dirname, '..', 'non-existing-file.json'));
       expect(result).toEqual(false);
-    });
-
-    it('should match existsSync behavior', async () => {
-      const files = ['package.json', 'package-lock.json', 'non-existing.json'];
-      for (const file of files) {
-        const fullPath = join(__dirname, '..', file);
-        const pathExistsResult = await pathExists(fullPath);
-        const existsSyncResult = existsSync(fullPath);
-        expect(pathExistsResult).toEqual(existsSyncResult);
-      }
     });
   });
 
-  describe('findUpMultiple', () => {
-    it('should find lock file in current directory', async () => {
-      const results = await findUpMultiple(['package-lock.json'], { type: 'file', cwd: join(__dirname, '..') });
-      expect(results.length).toBeGreaterThanOrEqual(1);
-      expect(results[0].endsWith('package-lock.json')).toEqual(true);
+  describe('findFile (empathic)', () => {
+    it('should find lock file in current directory', () => {
+      const result = findFile('package-lock.json', { cwd: join(__dirname, '..') });
+      expect(result).toBeDefined();
+      expect(result!.endsWith('package-lock.json')).toEqual(true);
     });
 
-    it('should find lock file in parent directory (walk-up)', async () => {
-      const results = await findUpMultiple(['package-lock.json'], {
-        type: 'file',
+    it('should find lock file in parent directory (walk-up)', () => {
+      const result = findFile('package-lock.json', {
         cwd: join(__dirname, '..', 'examples', 'workspace', 'foo'),
       });
-      expect(results.length).toBeGreaterThanOrEqual(1);
-      expect(results[0]).toContain('package-lock.json');
-      expect(results[0]).toContain('workspace');
+      expect(result).toBeDefined();
+      expect(result).toContain('package-lock.json');
+      expect(result).toContain('workspace');
     });
 
-    it('should return empty array for non-existing files', async () => {
-      const results = await findUpMultiple(['non-existing-lock.json'], { type: 'file' });
-      expect(results).toEqual([]);
+    it('should return undefined for non-existing files', () => {
+      const result = findFile('non-existing-lock.json');
+      expect(result).toBeUndefined();
     });
 
-    it('should find each requested file individually', async () => {
+    it('should find each requested file individually', () => {
       const cwd = join(__dirname, '..');
-      const pkgJson = await findUpMultiple(['package.json'], { type: 'file', cwd });
-      const pkgLock = await findUpMultiple(['package-lock.json'], { type: 'file', cwd });
-      expect(pkgJson.length).toBeGreaterThanOrEqual(1);
-      expect(pkgLock.length).toBeGreaterThanOrEqual(1);
-      expect(pkgJson[0].endsWith('package.json')).toEqual(true);
-      expect(pkgLock[0].endsWith('package-lock.json')).toEqual(true);
+      const packageJson = findFile('package.json', { cwd });
+      const packageLock = findFile('package-lock.json', { cwd });
+      expect(packageJson).toBeDefined();
+      expect(packageLock).toBeDefined();
+      expect(packageJson!.endsWith('package.json')).toEqual(true);
+      expect(packageLock!.endsWith('package-lock.json')).toEqual(true);
     });
 
-    it('should return closest match first when searching from subdirectory', async () => {
-      const results = await findUpMultiple(['package-lock.json'], {
-        type: 'file',
+    it('should return closest match when searching from subdirectory', () => {
+      const result = findFile('package-lock.json', {
         cwd: join(__dirname, '..', 'examples', 'workspace', 'foo'),
       });
-      expect(results[0]).toMatch(/workspace[/\\]package-lock\.json$/);
+      expect(result).toMatch(/workspace[/\\]package-lock\.json$/);
     });
   });
 });

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { findUp } from 'find-up';
+import { file as findFile } from 'empathic/find';
 import fs from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,7 +9,7 @@ import { pinDependenciesFromCLI } from '../lib/npd.js';
 import { cli } from '../lib/yargs.js';
 
 (async () => {
-  const packageJsonPath = await findUp('package.json', { type: 'file', cwd: dirname(fileURLToPath(import.meta.url)) });
+  const packageJsonPath = findFile('package.json', { cwd: dirname(fileURLToPath(import.meta.url)) });
   const packageJson = JSON.parse(await fs.readFile(packageJsonPath!, 'utf8'));
   const notifier = updateNotifier({
     pkg: packageJson,
