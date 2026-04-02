@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.11.1](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.11.0...v0.11.1) (2026-04-02)
+
+
+### Chores
+
+* **deps:** upgrade knip to v6 ([acfcbac](https://github.com/smarlhens/npm-pin-dependencies/commit/acfcbac38ecca1853401608b488b653ee9df2cd7))
+* **deps:** upgrade lint-staged to v16 ([eab5c12](https://github.com/smarlhens/npm-pin-dependencies/commit/eab5c125b1bac949eebe32718fdfd0717def493d))
+* **deps:** upgrade vitest to v4 ([34950a3](https://github.com/smarlhens/npm-pin-dependencies/commit/34950a3060c3791a07dca8d830ec46089698b6d8))
+* **deps:** upgrade yargs to v18 ([1d8f948](https://github.com/smarlhens/npm-pin-dependencies/commit/1d8f948d26d6bc9e81f0b24fae3206e330281497))
+* enable publint & attw package validation ([b452de4](https://github.com/smarlhens/npm-pin-dependencies/commit/b452de487262b2150066f244e8ab655620b4a8a2))
+* update .renovaterc.json ([cc12ef9](https://github.com/smarlhens/npm-pin-dependencies/commit/cc12ef97fedbfc7b17f034531cd3f330549e434d))
+* update .renovaterc.json ([5e4da5f](https://github.com/smarlhens/npm-pin-dependencies/commit/5e4da5ff87d8cb849abaafaee82803ec19944f89))
+* use tsgo for typecheck & DTS generation ([971440e](https://github.com/smarlhens/npm-pin-dependencies/commit/971440e46443ac96a168b875857642010f9904dd))
+
+
+### Code Refactoring
+
+* migrate listr2 from v8 to v9 ([2fb609b](https://github.com/smarlhens/npm-pin-dependencies/commit/2fb609bc83273b1da162478c9acb80b1f7fe620c))
+* replace prettier with oxfmt ([7a9477a](https://github.com/smarlhens/npm-pin-dependencies/commit/7a9477aa0b8176fa13fdbcdab9edfdece9dbadb3))
+* replace tsup with tsdown ([21529df](https://github.com/smarlhens/npm-pin-dependencies/commit/21529df19c1a8b44210037013078b7da1e5e534c))
+
 ## [0.11.0](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.10.3...v0.11.0) (2026-04-02)
 
 
