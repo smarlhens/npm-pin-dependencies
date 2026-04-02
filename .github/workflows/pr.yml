@@ -30,5 +30,7 @@ jobs:
         run: npm run prettier:check
       - name: Run knip
         run: npx knip
+      - name: Typecheck
+        run: npm run typecheck
       - name: Build & Test
         run: npm run test:ci
