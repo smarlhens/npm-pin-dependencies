@@ -11,10 +11,6 @@ module.exports = {
        * v6 breaking changes, not sure supported by all deps
        */
       typescript: 'minor',
-      /**
-       * v18 requires node >=20, keeping v17.x
-       */
-      yargs: 'minor',
     };
 
     const keys = Object.keys(targets);
