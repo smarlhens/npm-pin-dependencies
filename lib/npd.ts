@@ -4,7 +4,6 @@ import * as lockfile from '@yarnpkg/lockfile';
 import { parseSyml } from '@yarnpkg/parsers';
 import type { JSONSchemaType, Schema } from 'ajv';
 import Ajv from 'ajv';
-import chalk from 'chalk';
 import Table from 'cli-table';
 import type { Debugger } from 'debug';
 import Debug from 'debug';
@@ -21,6 +20,7 @@ import type {
 import { Listr } from 'listr2';
 import fs from 'node:fs/promises';
 import { join, normalize } from 'node:path';
+import pc from 'picocolors';
 import * as semver from 'semver';
 
 import type { CLIArgs } from './yargs.js';
@@ -649,7 +649,7 @@ export const pinDependencies = (ctx: PinDependenciesInput): PinDependenciesOutpu
       const userDefinedVersion = packageJson[dependencyType][dependencyName];
 
       if (userDefinedVersion.startsWith('file:')) {
-        debug(`Dependency ${chalk.white(dependencyName)} is using a local path as version.`);
+        debug(`Dependency ${pc.white(dependencyName)} is using a local path as version.`);
         continue;
       }
 
@@ -659,34 +659,32 @@ export const pinDependencies = (ctx: PinDependenciesInput): PinDependenciesOutpu
       });
       let packageLockDependency: LockDependency | undefined = resolver.lockedDependencies[dependencyKey];
       if (!packageLockDependency) {
-        debug(`Dependency ${chalk.white(dependencyName)} is undefined in ${chalk.cyan('dependencies')}.`);
+        debug(`Dependency ${pc.white(dependencyName)} is undefined in ${pc.cyan('dependencies')}.`);
         continue;
       }
 
       const isLinked = 'link' in packageLockDependency && packageLockDependency.link;
       if (isLinked && 'resolved' in packageLockDependency) {
-        debug(
-          `Dependency ${chalk.white(dependencyName)} resolved using ${chalk.white(packageLockDependency.resolved)}.`,
-        );
+        debug(`Dependency ${pc.white(dependencyName)} resolved using ${pc.white(packageLockDependency.resolved)}.`);
         packageLockDependency = resolver.lockedDependencies[packageLockDependency.resolved];
       }
 
       if (isLinked && !packageLockDependency) {
-        debug(`Dependency ${chalk.white(dependencyName)} is unresolved in ${chalk.cyan('dependencies')}.`);
+        debug(`Dependency ${pc.white(dependencyName)} is unresolved in ${pc.cyan('dependencies')}.`);
         continue;
       }
 
       if (!('version' in packageLockDependency)) {
-        debug(`Dependency ${chalk.white(dependencyName)} version is undefined.`);
+        debug(`Dependency ${pc.white(dependencyName)} version is undefined.`);
         continue;
       }
 
       const installedVersion = packageLockDependency.version;
       if (!semver.clean(userDefinedVersion, { loose: true }) && installedVersion !== userDefinedVersion) {
         debug(
-          `Dependency ${chalk.white(dependencyName)} version is not pinned: ${chalk.red(
+          `Dependency ${pc.white(dependencyName)} version is not pinned: ${pc.red(
             userDefinedVersion,
-          )} -> ${chalk.green(installedVersion)}.`,
+          )} -> ${pc.green(installedVersion)}.`,
         );
         versionsToPin.push({
           dependency: dependencyName,
@@ -695,7 +693,7 @@ export const pinDependencies = (ctx: PinDependenciesInput): PinDependenciesOutpu
         });
         packageJson[dependencyType][dependencyName] = installedVersion;
       } else {
-        debug(`Dependency ${chalk.white(dependencyName)} version is already pinned.`);
+        debug(`Dependency ${pc.white(dependencyName)} version is already pinned.`);
       }
     }
   }
@@ -960,7 +958,7 @@ const pinDependenciesTasks = ({
         }
 
         if (0 === versionsToPin.length) {
-          task.title = `All dependency versions are already pinned ${chalk.green(':)')}`;
+          task.title = `All dependency versions are already pinned ${pc.green(':)')}`;
         } else {
           const table: Table = createOutputTable(colWidths);
           table.push(...colValues);
@@ -970,7 +968,7 @@ const pinDependenciesTasks = ({
           }:\n\n${table.toString()}`;
 
           if (!options.update) {
-            title += `\n\nRun ${chalk.cyan(generateUpdateCommandFromContext(options))} to upgrade package.json.`;
+            title += `\n\nRun ${pc.cyan(generateUpdateCommandFromContext(options))} to upgrade package.json.`;
           }
 
           task.title = title;
