@@ -4,10 +4,6 @@ module.exports = {
     const targets = {
       '@types/node': 'minor',
       /**
-       * v16 requires node >=20, keeping v15.x
-       */
-      'lint-staged': 'minor',
-      /**
        * v9 requires node >=20, v10 requires node >=22, keeping v8.x
        */
       listr2: 'minor',
