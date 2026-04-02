@@ -19,17 +19,11 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v6
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ matrix.node }}
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
+          cache: 'npm'
       - name: Install dependencies
         run: npm ci
       - name: Prettier
