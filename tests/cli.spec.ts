@@ -1,5 +1,5 @@
-import { execa } from 'execa';
 import { join } from 'node:path';
+import { x } from 'tinyexec';
 import { describe, expect, it } from 'vitest';
 
 describe('run cli over examples', () => {
@@ -14,24 +14,26 @@ describe('run cli over examples', () => {
 
   for (let [folder] of examples) {
     it(`should run with ${folder}`, async () => {
-      const { stdout } = await execa(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
-        cwd: join(__dirname, '..', 'examples', folder),
+      const { stdout } = await x(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
+        throwOnError: true,
+        nodeOptions: { cwd: join(__dirname, '..', 'examples', folder) },
       });
       expect(stdout).toContain('All dependency versions are already pinned');
     });
   }
 
   it('should handle error with npm-lock-v2-packages', async () => {
-    await expect(
-      execa(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
-        cwd: join(__dirname, '..', 'examples', 'npm-lock-v2-packages'),
-      }),
-    ).rejects.toThrowError(/data must have required property 'dependencies'/);
+    const result = await x(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
+      nodeOptions: { cwd: join(__dirname, '..', 'examples', 'npm-lock-v2-packages') },
+    });
+    expect(result.exitCode).not.toEqual(0);
+    expect(result.stderr).toMatch(/data must have required property 'dependencies'/);
   });
 
   it('should handle versions to pin with versions-to-pin', async () => {
-    const { stdout } = await execa(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
-      cwd: join(__dirname, '..', 'examples', 'versions-to-pin'),
+    const { stdout } = await x(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
+      throwOnError: true,
+      nodeOptions: { cwd: join(__dirname, '..', 'examples', 'versions-to-pin') },
     });
     expect(stdout).toContain('fake-package-01          ^1.0.0            →  1.1.0');
     expect(stdout).toContain('fake-package-02          ~2.5.0            →  2.5.2');
@@ -53,8 +55,9 @@ describe('run cli over examples', () => {
   });
 
   it('should handle versions to pin with workspace foo', async () => {
-    const { stdout } = await execa(`node`, [join('..', '..', '..', 'dist', 'bin', 'npd.js')], {
-      cwd: join(__dirname, '..', 'examples', 'workspace', 'foo'),
+    const { stdout } = await x(`node`, [join('..', '..', '..', 'dist', 'bin', 'npd.js')], {
+      throwOnError: true,
+      nodeOptions: { cwd: join(__dirname, '..', 'examples', 'workspace', 'foo') },
     });
 
     expect(stdout).toContain('fake-package-1  ^1.0.0  →  1.0.3');
@@ -63,8 +66,9 @@ describe('run cli over examples', () => {
   });
 
   it('should handle versions to pin with yarn-lock-v1', async () => {
-    const { stdout } = await execa(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
-      cwd: join(__dirname, '..', 'examples', 'yarn-lock-v1'),
+    const { stdout } = await x(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
+      throwOnError: true,
+      nodeOptions: { cwd: join(__dirname, '..', 'examples', 'yarn-lock-v1') },
     });
 
     expect(stdout).toContain('fake-package-1  ^1.0.0  →  1.0.3');
@@ -73,8 +77,9 @@ describe('run cli over examples', () => {
   });
 
   it('should handle versions to pin with yarn-lock-v2', async () => {
-    const { stdout } = await execa(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
-      cwd: join(__dirname, '..', 'examples', 'yarn-lock-v2'),
+    const { stdout } = await x(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
+      throwOnError: true,
+      nodeOptions: { cwd: join(__dirname, '..', 'examples', 'yarn-lock-v2') },
     });
 
     expect(stdout).toContain('fake-package-1  ^1.0.0  →  1.0.3');
@@ -83,8 +88,9 @@ describe('run cli over examples', () => {
   });
 
   it('should handle versions to pin with pnpm-lock-v5-4', async () => {
-    const { stdout } = await execa(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
-      cwd: join(__dirname, '..', 'examples', 'pnpm-lock-v5-4'),
+    const { stdout } = await x(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
+      throwOnError: true,
+      nodeOptions: { cwd: join(__dirname, '..', 'examples', 'pnpm-lock-v5-4') },
     });
 
     expect(stdout).toContain('fake-package-1  ^1.0.0  →  1.0.3');
@@ -93,8 +99,9 @@ describe('run cli over examples', () => {
   });
 
   it('should handle versions to pin with pnpm-lock-v6', async () => {
-    const { stdout } = await execa(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
-      cwd: join(__dirname, '..', 'examples', 'pnpm-lock-v6'),
+    const { stdout } = await x(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
+      throwOnError: true,
+      nodeOptions: { cwd: join(__dirname, '..', 'examples', 'pnpm-lock-v6') },
     });
 
     expect(stdout).toContain('fake-package-1  ^1.0.0  →  1.0.3');
@@ -103,8 +110,9 @@ describe('run cli over examples', () => {
   });
 
   it('should handle versions to pin with pnpm-lock-v9', async () => {
-    const { stdout } = await execa(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
-      cwd: join(__dirname, '..', 'examples', 'pnpm-lock-v9'),
+    const { stdout } = await x(`node`, [join('..', '..', 'dist', 'bin', 'npd.js')], {
+      throwOnError: true,
+      nodeOptions: { cwd: join(__dirname, '..', 'examples', 'pnpm-lock-v9') },
     });
 
     expect(stdout).toContain('fake-package-1  ^1.0.0  →  1.0.3');
