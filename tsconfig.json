@@ -16,7 +16,6 @@
     "typeRoots": ["node_modules/@types"],
     "types": ["node", "yargs"],
     "lib": ["ES2021", "DOM"],
-    "baseUrl": ".",
     "strict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

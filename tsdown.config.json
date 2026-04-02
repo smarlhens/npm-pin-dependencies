@@ -5,7 +5,7 @@
   "shims": true,
   "minify": true,
   "dts": {
-    "resolve": true,
+    "tsgo": true,
     "entry": "lib/npd.ts"
   },
   "format": ["cjs", "es"],
