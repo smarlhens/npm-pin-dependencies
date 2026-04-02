@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.10.3](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.10.2...v0.10.3) (2026-04-02)
+
+
+### Code Refactoring
+
+* replace chalk with picocolors ([0b7272e](https://github.com/smarlhens/npm-pin-dependencies/commit/0b7272efa3a3e41204c408fc3ab5390b32779a1e))
+* replace debug with obug ([2380564](https://github.com/smarlhens/npm-pin-dependencies/commit/23805640d5400dee14cd7d300b9b01f86e612495))
+* replace execa with tinyexec ([31aee30](https://github.com/smarlhens/npm-pin-dependencies/commit/31aee302ad37446a4f4858489802319b9dde3860))
+* replace find-up with empathic ([a9bc392](https://github.com/smarlhens/npm-pin-dependencies/commit/a9bc392a9dfcbf2eb71e016dd48c6d39a6be448a))
+
+
+### Tests
+
+* add find-up behavior non-regression tests ([ffffac2](https://github.com/smarlhens/npm-pin-dependencies/commit/ffffac2339d2ad6562f45d4ddf47b15cb27c8510))
+
 ## [0.10.2](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.10.1...v0.10.2) (2026-04-02)
 
 
