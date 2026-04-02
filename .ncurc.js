@@ -12,10 +12,6 @@ module.exports = {
        */
       listr2: 'minor',
       /**
-       * v6 requires node >=20, keeping v5.x
-       */
-      rimraf: 'minor',
-      /**
        * v3.2+ has subdeps requiring node >=20 (vite@7), v4 requires node >=20
        */
       vitest: 'patch',

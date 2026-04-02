@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "downlevelIteration": true,
-    "importHelpers": true,
     "allowJs": true,
     "module": "ES2022",
     "outDir": "./dist",

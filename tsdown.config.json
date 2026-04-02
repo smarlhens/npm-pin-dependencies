@@ -1,0 +1,13 @@
+{
+  "entry": ["lib/**/*.ts", "bin/npd.ts"],
+  "platform": "node",
+  "fixedExtension": false,
+  "shims": true,
+  "minify": true,
+  "dts": {
+    "resolve": true,
+    "entry": "lib/npd.ts"
+  },
+  "format": ["cjs", "es"],
+  "clean": true
+}
