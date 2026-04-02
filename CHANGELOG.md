@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.10.2](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.10.1...v0.10.2) (2026-04-02)
+
+
+### Chores
+
+* add .nvmrc ([05bb0d4](https://github.com/smarlhens/npm-pin-dependencies/commit/05bb0d4f340a1d0286551487a873dcf2118141c7))
+* add node 24 to supported engines ([88af240](https://github.com/smarlhens/npm-pin-dependencies/commit/88af240816de55a053d51716918e612dea6fc5f7))
+* **deps:** downgrade knip to 5.53.0 & pin to patch in ncurc ([e4d6c82](https://github.com/smarlhens/npm-pin-dependencies/commit/e4d6c82d68ac3e5ee24a80aff7d7df0e1698bc46))
+* **deps:** update minor dependencies ([15d6cce](https://github.com/smarlhens/npm-pin-dependencies/commit/15d6cceee1b9d04c70d71b41d1923d7fab63b91a))
+* **deps:** upgrade commitlint to v20 ([4d93f32](https://github.com/smarlhens/npm-pin-dependencies/commit/4d93f32d9d96aa591637fbf8724e0b55ed87fe1e))
+* pin node-20-constrained deps to minor in ncurc ([3198a75](https://github.com/smarlhens/npm-pin-dependencies/commit/3198a75a3c3385b0065733272553d55c15fb07a3))
+* update patch deps version ([ee70c03](https://github.com/smarlhens/npm-pin-dependencies/commit/ee70c031ffc94f7799e5da36a34c4819f4c4c3a6))
+* upgrade actions/checkout to v6 ([6709cf1](https://github.com/smarlhens/npm-pin-dependencies/commit/6709cf1dede68c2fdc71bbc0c64aa77efc4183e9))
+* upgrade codeql-action to v4 ([2114af3](https://github.com/smarlhens/npm-pin-dependencies/commit/2114af3d772c076601b502b623745dfc0457ace6))
+* upgrade setup-node to v6 & use .nvmrc ([381e6f1](https://github.com/smarlhens/npm-pin-dependencies/commit/381e6f1f5be0055fb6dd3209490f3c043e7f6307))
+
+
+### Continuous Integration
+
+* add typecheck step to npm scripts & CI workflows ([f00d2f6](https://github.com/smarlhens/npm-pin-dependencies/commit/f00d2f6a2d901237d58e9683e0c20da77b189d39))
+* use OIDC trusted publisher for npm publishing ([620e400](https://github.com/smarlhens/npm-pin-dependencies/commit/620e4009de3ddfb657b123681c60d8da3377836d))
+
+
+### Bug Fixes
+
+* apply npm pkg fix corrections to package.json ([1889acc](https://github.com/smarlhens/npm-pin-dependencies/commit/1889accfa72ccc3a955d63b8c0f8199b8f613358))
+
 ## [0.10.1](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.10.0...v0.10.1) (2025-05-08)
 
 
