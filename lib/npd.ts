@@ -6,7 +6,7 @@ import type { JSONSchemaType, Schema } from 'ajv';
 import Ajv from 'ajv';
 import Table from 'cli-table';
 import detectIndent from 'detect-indent';
-import { findUpMultiple, pathExists } from 'find-up';
+import { file as findFile } from 'empathic/find';
 import type {
   ListrBaseClassOptions,
   ListrGetRendererOptions,
@@ -16,6 +16,7 @@ import type {
   ListrTaskWrapper,
 } from 'listr2';
 import { Listr } from 'listr2';
+import { existsSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import { join, normalize } from 'node:path';
 import { createDebug, type Debugger, disable, enable } from 'obug';
@@ -791,7 +792,7 @@ const filterLockFileWithUndefinedContent = (lockFile: FetchedLockFile): boolean 
   typeof lockFile.content !== 'undefined';
 
 const readLockFile = async ({ ctx }: { ctx: PinDependenciesContext }): Promise<PinDependenciesContext> => {
-  const fileExists = await Promise.all(lockFileConfigurations.map(config => pathExists(config.filePath)));
+  const fileExists = lockFileConfigurations.map(config => existsSync(config.filePath));
 
   const fetchedLockFiles: FetchedLockFile[] = (
     await Promise.all(
@@ -818,15 +819,10 @@ const readLockFile = async ({ ctx }: { ctx: PinDependenciesContext }): Promise<P
     return Promise.resolve(ctx);
   }
 
-  const findUpLockPaths: string[] = await findUpMultiple(
-    lockFileConfigurations.map(config => config.fileName),
-    { type: 'file' },
-  );
-
   const findUpLockFiles: FetchedLockFile[] = (
     await Promise.all(
       lockFileConfigurations.map(config => {
-        const path = findUpLockPaths.find(absolutePath => absolutePath.endsWith(config.fileName))!;
+        const path = findFile(config.fileName);
 
         if (!path) {
           return Promise.all([config, undefined, undefined]);
