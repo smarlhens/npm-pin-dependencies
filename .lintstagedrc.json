@@ -1,4 +1,3 @@
 {
-  "./**/*.{js,ts,json,yml,md}": ["prettier --write"],
-  "package.json": ["sort-package-json"]
+  "*": ["oxfmt --no-error-on-unmatched-pattern"]
 }

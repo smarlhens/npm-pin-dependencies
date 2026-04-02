@@ -4,14 +4,6 @@ module.exports = {
     const targets = {
       '@types/node': 'minor',
       /**
-       * v6 requires node >=20, keeping v5.x
-       */
-      '@trivago/prettier-plugin-sort-imports': 'minor',
-      /**
-       * v8 requires node >=20, keeping v7.x
-       */
-      'find-up': 'minor',
-      /**
        * v16 requires node >=20, keeping v15.x
        */
       'lint-staged': 'minor',
@@ -23,10 +15,6 @@ module.exports = {
        * v6 requires node >=20, keeping v5.x
        */
       rimraf: 'minor',
-      /**
-       * v3 requires node >=20, keeping v2.x
-       */
-      'sort-package-json': 'minor',
       /**
        * v3.2+ has subdeps requiring node >=20 (vite@7), v4 requires node >=20
        */

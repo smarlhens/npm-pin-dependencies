@@ -1,20 +1,10 @@
 import { readWantedLockfile } from '@pnpm/lockfile.fs';
-import type { LockFileObject } from '@yarnpkg/lockfile';
 import * as lockfile from '@yarnpkg/lockfile';
 import { parseSyml } from '@yarnpkg/parsers';
-import type { JSONSchemaType, Schema } from 'ajv';
 import Ajv from 'ajv';
 import Table from 'cli-table';
 import detectIndent from 'detect-indent';
 import { file as findFile } from 'empathic/find';
-import type {
-  ListrBaseClassOptions,
-  ListrGetRendererOptions,
-  ListrRenderer,
-  ListrRendererOptions,
-  ListrRendererValue,
-  ListrTaskWrapper,
-} from 'listr2';
 import { Listr } from 'listr2';
 import { existsSync } from 'node:fs';
 import fs from 'node:fs/promises';
@@ -24,6 +14,16 @@ import pc from 'picocolors';
 import * as semver from 'semver';
 
 import type { CLIArgs } from './yargs.js';
+import type { LockFileObject } from '@yarnpkg/lockfile';
+import type { JSONSchemaType, Schema } from 'ajv';
+import type {
+  ListrBaseClassOptions,
+  ListrGetRendererOptions,
+  ListrRenderer,
+  ListrRendererOptions,
+  ListrRendererValue,
+  ListrTaskWrapper,
+} from 'listr2';
 
 type Dependencies = {
   [dependencyName: string]: string;
