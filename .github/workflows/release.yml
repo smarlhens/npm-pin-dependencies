@@ -28,7 +28,7 @@ jobs:
       - name: Build & Test
         run: npm run test:ci
       - name: Release
-        uses: googleapis/release-please-action@v4
+        uses: googleapis/release-please-action@v5
         with:
           token: ${{ secrets.PAT }}
           config-file: release-please-config.json

@@ -35,7 +35,7 @@ jobs:
           echo "skip_github_pull_request=${{ startsWith(github.event.head_commit.message, 'chore(main): release') }}" >> $GITHUB_ENV
           echo "skip_github_release=${{ !startsWith(github.event.head_commit.message, 'chore(main): release') }}" >> $GITHUB_ENV
       - name: Prepare release
-        uses: googleapis/release-please-action@v4
+        uses: googleapis/release-please-action@v5
         with:
           token: ${{ secrets.PAT }}
           config-file: release-please-config.json
