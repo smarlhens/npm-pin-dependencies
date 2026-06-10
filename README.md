@@ -1,5 +1,15 @@
 # NPM pin dependencies
 
+> [!IMPORTANT]
+> **This project has been rewritten in Rust and this repository is now archived (read-only).**
+>
+> Development continues in [smarlhens/riri-node-tools](https://github.com/smarlhens/riri-node-tools):
+>
+> - [`riri-npd`](https://github.com/smarlhens/riri-node-tools/tree/main/crates/riri-npd) — core Rust library
+> - [`riri-napi-npd`](https://github.com/smarlhens/riri-node-tools/tree/main/crates/riri-napi-npd) — Node binding (napi)
+>
+> The npm package is still published under the same name [`@smarlhens/npm-pin-dependencies`](https://www.npmjs.com/package/@smarlhens/npm-pin-dependencies): `0.x` releases are the original JavaScript implementation, `>=1.x` releases are backed by the Rust rewrite.
+
 [![CodeQL](https://github.com/smarlhens/npm-pin-dependencies/workflows/codeql/badge.svg)](https://github.com/smarlhens/npm-pin-dependencies/actions/workflows/codeql.yml)
 [![GitHub CI](https://github.com/smarlhens/npm-pin-dependencies/workflows/ci/badge.svg)](https://github.com/smarlhens/npm-pin-dependencies/actions/workflows/ci.yml)
 ![node-current (scoped)](https://img.shields.io/node/v/@smarlhens/npm-pin-dependencies)
