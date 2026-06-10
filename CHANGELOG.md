@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.2](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.11.1...v0.11.2) (2026-06-10)
+
+
+### Documentation
+
+* announce rust rewrite & repo archival ([6deebd3](https://github.com/smarlhens/npm-pin-dependencies/commit/6deebd366465412241e66a4cd58837debbf11ece))
+
 ## [0.11.1](https://github.com/smarlhens/npm-pin-dependencies/compare/v0.11.0...v0.11.1) (2026-04-02)
 
 
